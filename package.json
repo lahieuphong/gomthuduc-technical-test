@@ -2,6 +2,11 @@
   "name": "gom-production-pipeline",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "yarn@1.22.22",
+  "engines": {
+    "node": ">=20.19.0",
+    "yarn": ">=1.22.0 <2"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build --webpack",

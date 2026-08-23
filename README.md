@@ -4,18 +4,23 @@ Working MVP điều phối và giám sát quy trình sản xuất xưởng gốm
 
 ## Khởi chạy local
 
-Tạo file môi trường từ mẫu và cài dependency:
+Yêu cầu:
+
+- Node.js 20.19 trở lên
+- Yarn Classic 1.22.x
+
+Tạo file môi trường từ mẫu và cài dependency bằng Yarn:
 
 ```bash
 cp .env.example .env
-npm install
-npm run prisma:generate
+yarn install
+yarn prisma:generate
 ```
 
 Khởi chạy development server:
 
 ```bash
-npm run dev
+yarn dev
 ```
 
 Mở [http://localhost:3000](http://localhost:3000) trên trình duyệt.
@@ -23,7 +28,7 @@ Mở [http://localhost:3000](http://localhost:3000) trên trình duyệt.
 ## Kiểm tra chất lượng
 
 ```bash
-npm run lint
-npm run typecheck
-npm run build
+yarn lint
+yarn typecheck
+yarn build
 ```
