@@ -7,13 +7,15 @@ Working MVP điều phối và giám sát quy trình sản xuất xưởng gốm
 Yêu cầu:
 
 - Node.js 20.19 trở lên
-- Yarn Classic 1.22.x
+- Corepack
+- Yarn 4.18.x
 
 Tạo file môi trường từ mẫu và cài dependency bằng Yarn:
 
 ```bash
 cp .env.example .env
-yarn install
+corepack enable
+yarn install --immutable
 yarn prisma:generate
 ```
 
