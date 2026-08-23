@@ -17,6 +17,8 @@ cp .env.example .env
 corepack enable
 yarn install --immutable
 yarn prisma:generate
+yarn db:migrate --name init
+yarn db:seed
 ```
 
 Khởi chạy development server:
@@ -32,5 +34,6 @@ Mở [http://localhost:3000](http://localhost:3000) trên trình duyệt.
 ```bash
 yarn lint
 yarn typecheck
+yarn test
 yarn build
 ```

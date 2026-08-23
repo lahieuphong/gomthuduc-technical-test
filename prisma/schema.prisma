@@ -6,3 +6,88 @@ generator client {
 datasource db {
   provider = "sqlite"
 }
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum Stage {
+  FORMING
+  DRYING_REPAIR
+  PAINTING
+  GLAZING
+  FIRING
+  QC
+  PACKING
+  COMPLETED
+}
+
+enum EventType {
+  BATCH_CREATED
+  STAGE_TRANSITION
+  AI_ANALYZED
+  QC_REPORTED
+  TELEGRAM_SENT
+  NOTIFICATION_FAILED
+}
+
+model Batch {
+  id                   String     @id @default(cuid())
+  code                 String     @unique
+  rawDescription       String
+  productName          String
+  quantity             Int
+  heightCm             Float?
+  widthCm              Float?
+  pattern              String?
+  glazeType            String?
+  firingTemperatureC   Int?
+  estimatedClayKg      Float?
+  estimatedGlazeKg     Float?
+  estimatedFiringHours Float?
+  deadlineDays         Int
+  priority             Priority   @default(MEDIUM)
+  priorityReason       String?
+  currentStage         Stage      @default(FORMING)
+  aiAnalysis           Json?
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+  stageLogs            StageLog[]
+  qcReports            QCReport[]
+
+  @@index([currentStage])
+  @@index([priority])
+  @@index([createdAt])
+}
+
+model StageLog {
+  id        String    @id @default(cuid())
+  batchId   String
+  eventType EventType
+  fromStage Stage?
+  toStage   Stage?
+  message   String
+  metadata  Json?
+  createdAt DateTime  @default(now())
+  batch     Batch     @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  @@index([batchId, createdAt])
+}
+
+model QCReport {
+  id                String   @id @default(cuid())
+  batchId           String
+  inspectedQuantity Int
+  passedQuantity    Int
+  defectQuantity    Int
+  defectType        String?
+  notes             String?
+  defectRate        Float
+  createdAt         DateTime @default(now())
+  batch             Batch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  @@index([batchId, createdAt])
+}
