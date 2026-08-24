@@ -6,6 +6,7 @@ import {
   createBatchRequestSchema,
   orderAnalysisJsonSchema,
   orderAnalysisSchema,
+  transitionBatchRequestSchema,
 } from "@/lib/schemas";
 
 const sampleDescription =
@@ -92,5 +93,22 @@ describe("AI order analysis schemas", () => {
 
     assert.equal(validResult.success, true);
     assert.equal(invalidResult.success, false);
+  });
+
+  it("chỉ nhận expectedCurrentStage hợp lệ khi chuyển công đoạn", () => {
+    const validResult = transitionBatchRequestSchema.safeParse({
+      expectedCurrentStage: "FORMING",
+    });
+    const arbitraryTargetResult = transitionBatchRequestSchema.safeParse({
+      expectedCurrentStage: "FORMING",
+      toStage: "FIRING",
+    });
+    const invalidStageResult = transitionBatchRequestSchema.safeParse({
+      expectedCurrentStage: "UNKNOWN",
+    });
+
+    assert.equal(validResult.success, true);
+    assert.equal(arbitraryTargetResult.success, false);
+    assert.equal(invalidStageResult.success, false);
   });
 });

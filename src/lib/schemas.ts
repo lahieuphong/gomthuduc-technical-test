@@ -1,3 +1,4 @@
+import { Stage } from "@/generated/prisma/enums";
 import { z } from "zod";
 
 const nullableDimensionSchema = z
@@ -103,6 +104,12 @@ export const createBatchRequestSchema = z
 
 export const batchIdSchema = z.string().trim().min(1).max(100);
 
+export const transitionBatchRequestSchema = z
+  .object({
+    expectedCurrentStage: z.enum(Stage),
+  })
+  .strict();
+
 const jsonSchema = z.toJSONSchema(orderAnalysisSchema, {
   target: "draft-7",
 }) as Record<string, unknown>;
@@ -113,3 +120,6 @@ delete orderAnalysisJsonSchema.$schema;
 export type AnalyzeOrderRequest = z.infer<typeof analyzeOrderRequestSchema>;
 export type CreateBatchRequest = z.infer<typeof createBatchRequestSchema>;
 export type OrderAnalysis = z.infer<typeof orderAnalysisSchema>;
+export type TransitionBatchRequest = z.infer<
+  typeof transitionBatchRequestSchema
+>;

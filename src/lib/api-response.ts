@@ -5,15 +5,34 @@ export type ApiErrorCode =
   | "AI_SERVICE_UNAVAILABLE"
   | "BATCH_NOT_FOUND"
   | "BATCH_CODE_CONFLICT"
+  | "WORKFLOW_CONFLICT"
+  | "WORKFLOW_COMPLETED"
   | "INTERNAL_ERROR";
 
-export function successResponse<T>(data: T, init?: ResponseInit) {
+export type ApiWarning = {
+  code: "TELEGRAM_FAILED";
+  message: string;
+};
+
+type SuccessResponseInit = ResponseInit & {
+  warning?: ApiWarning;
+};
+
+export function successResponse<T>(data: T, init?: SuccessResponseInit) {
+  const { warning, ...responseInit } = init ?? {};
+
   return Response.json(
-    {
-      success: true,
-      data,
-    },
-    init,
+    warning
+      ? {
+          success: true,
+          data,
+          warning,
+        }
+      : {
+          success: true,
+          data,
+        },
+    responseInit,
   );
 }
 
