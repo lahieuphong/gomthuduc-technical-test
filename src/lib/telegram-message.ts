@@ -10,6 +10,20 @@ type TransitionMessageInput = {
   firingTemperatureC: number | null;
 };
 
+type QcMessageInput = {
+  code: string;
+  productName: string;
+  inspectedQuantity: number;
+  passedQuantity: number;
+  defectQuantity: number;
+  defectRate: number;
+  defectType: string | null;
+};
+
+function formatDefectRate(defectRate: number): string {
+  return String(Number(defectRate.toFixed(2)));
+}
+
 export function buildTransitionTelegramMessage(
   input: TransitionMessageInput,
 ): string {
@@ -39,4 +53,32 @@ export function buildTransitionTelegramMessage(
   }
 
   return lines.join("\n");
+}
+
+export function buildQcTelegramMessage(input: QcMessageInput): string {
+  if (input.defectQuantity === 0) {
+    return [
+      "✅ QC PASSED",
+      "",
+      `Mẻ: #${input.code}`,
+      `Sản phẩm: ${input.productName}`,
+      `Đã kiểm tra: ${input.inspectedQuantity}`,
+      `Đạt: ${input.passedQuantity}`,
+      "Lỗi: 0",
+    ].join("\n");
+  }
+
+  return [
+    "🚨🔴 QC ALERT",
+    "",
+    `Mẻ: #${input.code}`,
+    `Sản phẩm: ${input.productName}`,
+    `Kiểm tra: ${input.inspectedQuantity}`,
+    `Đạt: ${input.passedQuantity}`,
+    `Lỗi: ${input.defectQuantity}`,
+    `Tỷ lệ lỗi: ${formatDefectRate(input.defectRate)}%`,
+    `Loại lỗi: ${input.defectType ?? "Chưa phân loại"}`,
+    "",
+    "⚠️ Yêu cầu quản lý kiểm tra.",
+  ].join("\n");
 }

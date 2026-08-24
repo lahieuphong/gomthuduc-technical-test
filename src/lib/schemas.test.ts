@@ -6,6 +6,7 @@ import {
   createBatchRequestSchema,
   orderAnalysisJsonSchema,
   orderAnalysisSchema,
+  qcReportRequestSchema,
   transitionBatchRequestSchema,
 } from "@/lib/schemas";
 
@@ -110,5 +111,32 @@ describe("AI order analysis schemas", () => {
     assert.equal(validResult.success, true);
     assert.equal(arbitraryTargetResult.success, false);
     assert.equal(invalidStageResult.success, false);
+  });
+
+  it("validate số lượng QC và không nhận kết quả tính từ client", () => {
+    const validResult = qcReportRequestSchema.safeParse({
+      inspectedQuantity: 200,
+      defectQuantity: 10,
+      defectType: "Nứt men",
+      notes: null,
+    });
+    const excessiveDefectsResult = qcReportRequestSchema.safeParse({
+      inspectedQuantity: 10,
+      defectQuantity: 11,
+      defectType: null,
+      notes: null,
+    });
+    const clientCalculatedResult = qcReportRequestSchema.safeParse({
+      inspectedQuantity: 200,
+      defectQuantity: 10,
+      defectType: "Nứt men",
+      notes: null,
+      passedQuantity: 190,
+      defectRate: 5,
+    });
+
+    assert.equal(validResult.success, true);
+    assert.equal(excessiveDefectsResult.success, false);
+    assert.equal(clientCalculatedResult.success, false);
   });
 });

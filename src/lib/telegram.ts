@@ -2,7 +2,10 @@ import "server-only";
 
 import { z } from "zod";
 
-export { buildTransitionTelegramMessage } from "@/lib/telegram-message";
+export {
+  buildQcTelegramMessage,
+  buildTransitionTelegramMessage,
+} from "@/lib/telegram-message";
 
 const TELEGRAM_REQUEST_TIMEOUT_MS = 10_000;
 

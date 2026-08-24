@@ -110,6 +110,27 @@ export const transitionBatchRequestSchema = z
   })
   .strict();
 
+const nullableQcTextSchema = (maximumLength: number) =>
+  z.string().trim().min(1).max(maximumLength).nullable();
+
+export const qcReportRequestSchema = z
+  .object({
+    inspectedQuantity: z.number().int().min(1).max(1_000_000),
+    defectQuantity: z.number().int().min(0).max(1_000_000),
+    defectType: nullableQcTextSchema(200),
+    notes: nullableQcTextSchema(2_000),
+  })
+  .strict()
+  .superRefine((data, context) => {
+    if (data.defectQuantity > data.inspectedQuantity) {
+      context.addIssue({
+        code: "custom",
+        message: "Số lượng lỗi không được vượt quá số lượng đã kiểm tra.",
+        path: ["defectQuantity"],
+      });
+    }
+  });
+
 const jsonSchema = z.toJSONSchema(orderAnalysisSchema, {
   target: "draft-7",
 }) as Record<string, unknown>;
@@ -120,6 +141,7 @@ delete orderAnalysisJsonSchema.$schema;
 export type AnalyzeOrderRequest = z.infer<typeof analyzeOrderRequestSchema>;
 export type CreateBatchRequest = z.infer<typeof createBatchRequestSchema>;
 export type OrderAnalysis = z.infer<typeof orderAnalysisSchema>;
+export type QcReportRequest = z.infer<typeof qcReportRequestSchema>;
 export type TransitionBatchRequest = z.infer<
   typeof transitionBatchRequestSchema
 >;

@@ -9,16 +9,6 @@ type BatchTransitionErrorCode =
   | "WORKFLOW_CONFLICT"
   | "WORKFLOW_COMPLETED";
 
-type NotificationStatus = "sent" | "failed";
-
-type RecordNotificationInput = {
-  batchId: string;
-  batchCode: string;
-  fromStage: Stage;
-  toStage: Stage;
-  status: NotificationStatus;
-};
-
 export class BatchTransitionError extends Error {
   readonly code: BatchTransitionErrorCode;
 
@@ -91,29 +81,5 @@ export async function transitionBatchStage(
       toStage: nextStage,
       transitionLog,
     };
-  });
-}
-
-export async function recordTransitionNotification(
-  input: RecordNotificationInput,
-) {
-  const isSent = input.status === "sent";
-
-  return db.stageLog.create({
-    data: {
-      batchId: input.batchId,
-      eventType: isSent
-        ? EventType.TELEGRAM_SENT
-        : EventType.NOTIFICATION_FAILED,
-      fromStage: input.fromStage,
-      toStage: input.toStage,
-      message: isSent
-        ? `Đã gửi thông báo Telegram cho mẻ ${input.batchCode}.`
-        : `Không thể gửi thông báo Telegram cho mẻ ${input.batchCode}.`,
-      metadata: {
-        channel: "telegram",
-        status: input.status,
-      },
-    },
   });
 }

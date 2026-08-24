@@ -7,6 +7,8 @@ export type ApiErrorCode =
   | "BATCH_CODE_CONFLICT"
   | "WORKFLOW_CONFLICT"
   | "WORKFLOW_COMPLETED"
+  | "QC_STAGE_CONFLICT"
+  | "QC_QUANTITY_EXCEEDED"
   | "INTERNAL_ERROR";
 
 export type ApiWarning = {

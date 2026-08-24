@@ -1,9 +1,9 @@
 import { errorResponse, successResponse } from "@/lib/api-response";
 import {
   BatchTransitionError,
-  recordTransitionNotification,
   transitionBatchStage,
 } from "@/lib/batch-workflow";
+import { recordTelegramNotification } from "@/lib/notification-logs";
 import {
   batchIdSchema,
   transitionBatchRequestSchema,
@@ -122,8 +122,9 @@ export async function POST(request: Request, context: TransitionRouteContext) {
     );
 
     try {
-      await recordTransitionNotification({
+      await recordTelegramNotification({
         ...notificationInput,
+        context: "stage_transition",
         status: "sent",
       });
     } catch (error: unknown) {
@@ -133,8 +134,9 @@ export async function POST(request: Request, context: TransitionRouteContext) {
     return successResponse(transitionResult);
   } catch {
     try {
-      await recordTransitionNotification({
+      await recordTelegramNotification({
         ...notificationInput,
+        context: "stage_transition",
         status: "failed",
       });
     } catch (error: unknown) {
