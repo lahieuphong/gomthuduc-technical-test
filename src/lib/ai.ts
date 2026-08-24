@@ -2,9 +2,9 @@ import "server-only";
 
 import { GoogleGenAI } from "@google/genai";
 
+import { parseOrderAnalysisResponse } from "@/lib/ai-response";
 import {
   orderAnalysisJsonSchema,
-  orderAnalysisSchema,
   type OrderAnalysis,
 } from "@/lib/schemas";
 
@@ -62,21 +62,6 @@ function buildAnalysisPrompt(description: string, isRetry: boolean): string {
   return `${retryInstruction}Analyze this customer order description:\n${JSON.stringify(description)}`;
 }
 
-function parseAnalysisResponse(responseText: string | undefined) {
-  if (!responseText) {
-    return null;
-  }
-
-  try {
-    const parsedResponse: unknown = JSON.parse(responseText);
-    const validationResult = orderAnalysisSchema.safeParse(parsedResponse);
-
-    return validationResult.success ? validationResult.data : null;
-  } catch {
-    return null;
-  }
-}
-
 function logGeminiFailure(error: unknown) {
   console.error("Gemini order analysis request failed.", {
     errorType: error instanceof Error ? error.name : typeof error,
@@ -113,7 +98,7 @@ export async function analyzeOrderDescription(
       throw new AIServiceError("AI_UNAVAILABLE");
     }
 
-    const analysis = parseAnalysisResponse(responseText);
+    const analysis = parseOrderAnalysisResponse(responseText);
 
     if (analysis) {
       return analysis;

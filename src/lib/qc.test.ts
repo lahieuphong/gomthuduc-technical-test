@@ -26,4 +26,38 @@ describe("QC reporting rules", () => {
       null,
     );
   });
+
+  it("rejects zero or invalid inspected quantities", () => {
+    assert.equal(
+      calculateQcMetrics(10, {
+        inspectedQuantity: 0,
+        defectQuantity: 0,
+      }),
+      null,
+    );
+    assert.equal(
+      calculateQcMetrics(10, {
+        inspectedQuantity: 1.5,
+        defectQuantity: 0,
+      }),
+      null,
+    );
+  });
+
+  it("rejects negative defects or defects above inspected quantity", () => {
+    assert.equal(
+      calculateQcMetrics(10, {
+        inspectedQuantity: 5,
+        defectQuantity: -1,
+      }),
+      null,
+    );
+    assert.equal(
+      calculateQcMetrics(10, {
+        inspectedQuantity: 5,
+        defectQuantity: 6,
+      }),
+      null,
+    );
+  });
 });

@@ -12,7 +12,16 @@ export function calculateQcMetrics(
   batchQuantity: number,
   input: QcCounts,
 ): QcMetrics | null {
-  if (input.inspectedQuantity > batchQuantity) {
+  if (
+    !Number.isInteger(batchQuantity) ||
+    batchQuantity <= 0 ||
+    !Number.isInteger(input.inspectedQuantity) ||
+    input.inspectedQuantity <= 0 ||
+    !Number.isInteger(input.defectQuantity) ||
+    input.defectQuantity < 0 ||
+    input.defectQuantity > input.inspectedQuantity ||
+    input.inspectedQuantity > batchQuantity
+  ) {
     return null;
   }
 

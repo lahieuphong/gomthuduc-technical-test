@@ -43,11 +43,21 @@ export async function apiRequest<T>(
     headers.set("Content-Type", "application/json");
   }
 
-  const response = await fetch(path, {
-    ...init,
-    headers,
-    cache: "no-store",
-  });
+  let response: Response;
+
+  try {
+    response = await fetch(path, {
+      ...init,
+      headers,
+      cache: "no-store",
+    });
+  } catch {
+    throw new ApiClientError(
+      0,
+      "NETWORK_ERROR",
+      "Không thể kết nối tới máy chủ. Vui lòng kiểm tra kết nối và thử lại.",
+    );
+  }
   const payload: unknown = await response.json().catch(() => null);
 
   if (response.ok && isRecord(payload) && payload.success === true) {

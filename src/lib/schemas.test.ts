@@ -44,6 +44,21 @@ describe("AI order analysis schemas", () => {
     assert.equal(result.success && result.data.description, sampleDescription);
   });
 
+  it("từ chối mô tả rỗng, chỉ có khoảng trắng, quá ngắn hoặc quá dài", () => {
+    for (const description of ["", "   ", "đơn gốm"]) {
+      assert.equal(
+        analyzeOrderRequestSchema.safeParse({ description }).success,
+        false,
+      );
+    }
+
+    assert.equal(
+      analyzeOrderRequestSchema.safeParse({ description: "a".repeat(2_001) })
+        .success,
+      false,
+    );
+  });
+
   it("xác thực structured output mẫu và các giá trị nghiệp vụ", () => {
     const result = orderAnalysisSchema.safeParse(sampleAnalysis);
 
@@ -134,9 +149,16 @@ describe("AI order analysis schemas", () => {
       passedQuantity: 190,
       defectRate: 5,
     });
+    const zeroInspectedResult = qcReportRequestSchema.safeParse({
+      inspectedQuantity: 0,
+      defectQuantity: 0,
+      defectType: null,
+      notes: null,
+    });
 
     assert.equal(validResult.success, true);
     assert.equal(excessiveDefectsResult.success, false);
     assert.equal(clientCalculatedResult.success, false);
+    assert.equal(zeroInspectedResult.success, false);
   });
 });
