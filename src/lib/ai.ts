@@ -3,6 +3,7 @@ import "server-only";
 import { GoogleGenAI } from "@google/genai";
 
 import { parseOrderAnalysisResponse } from "@/lib/ai-response";
+import { addAIUsage, createAIUsage, type AIUsage } from "@/lib/ai-usage";
 import {
   orderAnalysisJsonSchema,
   type OrderAnalysis,
@@ -70,9 +71,10 @@ function logGeminiFailure(error: unknown) {
 
 export async function analyzeOrderDescription(
   description: string,
-): Promise<OrderAnalysis> {
+): Promise<{ analysis: OrderAnalysis; usage: AIUsage }> {
   const { apiKey, model } = getGeminiConfig();
   const ai = new GoogleGenAI({ apiKey });
+  let usage = createAIUsage(model);
 
   for (let attempt = 0; attempt < MAX_ANALYSIS_ATTEMPTS; attempt += 1) {
     let responseText: string | undefined;
@@ -92,6 +94,7 @@ export async function analyzeOrderDescription(
         },
       });
 
+      usage = addAIUsage(usage, response.usageMetadata);
       responseText = response.text;
     } catch (error: unknown) {
       logGeminiFailure(error);
@@ -101,7 +104,7 @@ export async function analyzeOrderDescription(
     const analysis = parseOrderAnalysisResponse(responseText);
 
     if (analysis) {
-      return analysis;
+      return { analysis, usage };
     }
   }
 

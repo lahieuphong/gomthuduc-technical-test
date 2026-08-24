@@ -26,11 +26,11 @@ export async function POST(request: Request) {
   }
 
   try {
-    const analysis = await analyzeOrderDescription(
+    const result = await analyzeOrderDescription(
       validationResult.data.description,
     );
 
-    return successResponse(analysis);
+    return successResponse(result);
   } catch (error: unknown) {
     if (error instanceof AIServiceError) {
       if (error.code === "AI_INVALID_RESPONSE") {

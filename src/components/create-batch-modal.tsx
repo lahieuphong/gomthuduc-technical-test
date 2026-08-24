@@ -4,7 +4,12 @@ import { useState, type FormEvent } from "react";
 
 import { Priority } from "@/generated/prisma/enums";
 import { apiRequest } from "@/lib/api-client";
-import type { BatchRecord, OrderAnalysis } from "@/types/api";
+import type {
+  AIUsage,
+  AnalyzeOrderResult,
+  BatchRecord,
+  OrderAnalysis,
+} from "@/types/api";
 import { DialogShell } from "@/components/dialog-shell";
 
 const SAMPLE_DESCRIPTION =
@@ -52,7 +57,94 @@ function formatDimensions(analysis: OrderAnalysis): string {
   return heightCm !== null ? `Cao ${heightCm} cm` : `Rộng ${widthCm} cm`;
 }
 
-function AnalysisPreview({ analysis }: { analysis: OrderAnalysis }) {
+function TokenUsage({ usage }: { usage: AIUsage }) {
+  const tokenItems = [
+    { label: "Input", value: usage.promptTokenCount },
+    { label: "Output", value: usage.candidatesTokenCount },
+    { label: "Suy luận", value: usage.thoughtsTokenCount },
+    { label: "Tổng", value: usage.totalTokenCount },
+  ];
+
+  return (
+    <section className="mt-4 rounded-2xl border border-sky-200 bg-sky-50/70 p-4 sm:p-5">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="text-xs font-bold tracking-wide text-sky-800 uppercase">
+            Mức sử dụng Gemini
+          </p>
+          <h4 className="mt-1 text-base font-bold text-stone-900">
+            {usage.totalTokenCount.toLocaleString("vi-VN")} token cho lần phân
+            tích này
+          </h4>
+        </div>
+        <span className="w-fit rounded-full bg-white px-3 py-1 font-mono text-xs font-bold text-sky-800 shadow-sm">
+          {usage.model}
+        </span>
+      </div>
+
+      <dl className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+        {tokenItems.map((item) => (
+          <div
+            className="rounded-xl border border-sky-100 bg-white px-3 py-2.5"
+            key={item.label}
+          >
+            <dt className="text-[10px] font-bold tracking-wide text-stone-400 uppercase">
+              {item.label}
+            </dt>
+            <dd className="mt-1 text-lg font-bold text-stone-900">
+              {item.value.toLocaleString("vi-VN")}
+            </dd>
+          </div>
+        ))}
+      </dl>
+
+      <p className="mt-3 text-xs leading-5 text-sky-950">
+        Số liệu thực do Gemini trả về, đã cộng {usage.requestCount} lượt gọi
+        {usage.requestCount > 1 ? " (bao gồm lần thử lại)" : ""}. Tổng token đã
+        gồm input, output và token suy luận.
+      </p>
+
+      {usage.cachedContentTokenCount > 0 && (
+        <p className="mt-1 text-xs text-sky-900">
+          Trong input có {usage.cachedContentTokenCount.toLocaleString("vi-VN")}
+          {" "}token từ cache.
+        </p>
+      )}
+
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <a
+          className="rounded-lg border border-sky-300 bg-white px-3 py-2 text-xs font-bold text-sky-800 hover:bg-sky-100"
+          href="https://aistudio.google.com/usage"
+          rel="noreferrer"
+          target="_blank"
+        >
+          Xem mức sử dụng ↗
+        </a>
+        <a
+          className="rounded-lg border border-sky-300 bg-white px-3 py-2 text-xs font-bold text-sky-800 hover:bg-sky-100"
+          href="https://aistudio.google.com/rate-limit?timeRange=last-28-days"
+          rel="noreferrer"
+          target="_blank"
+        >
+          Xem quota &amp; giới hạn ↗
+        </a>
+      </div>
+
+      <p className="mt-2 text-[11px] leading-4 text-stone-500">
+        Gemini không trả quota miễn phí còn lại trong từng response; AI Studio
+        là nguồn chính xác theo project của bạn.
+      </p>
+    </section>
+  );
+}
+
+function AnalysisPreview({
+  analysis,
+  usage,
+}: {
+  analysis: OrderAnalysis;
+  usage: AIUsage;
+}) {
   return (
     <section className="mt-6 border-t border-stone-200 pt-6">
       <div className="flex items-center justify-between gap-3">
@@ -119,6 +211,8 @@ function AnalysisPreview({ analysis }: { analysis: OrderAnalysis }) {
           <p className="mt-2 text-sm text-amber-900">Không có giả định bổ sung.</p>
         )}
       </div>
+
+      <TokenUsage usage={usage} />
     </section>
   );
 }
@@ -129,6 +223,7 @@ export function CreateBatchModal({
 }: CreateBatchModalProps) {
   const [description, setDescription] = useState("");
   const [analysis, setAnalysis] = useState<OrderAnalysis | null>(null);
+  const [usage, setUsage] = useState<AIUsage | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -153,13 +248,14 @@ export function CreateBatchModal({
     setIsAnalyzing(true);
 
     try {
-      const result = await apiRequest<OrderAnalysis>("/api/analyze", {
+      const result = await apiRequest<AnalyzeOrderResult>("/api/analyze", {
         method: "POST",
         body: JSON.stringify({ description: trimmedDescription }),
       });
 
       setDescription(trimmedDescription);
-      setAnalysis(result.data);
+      setAnalysis(result.data.analysis);
+      setUsage(result.data.usage);
     } catch (requestError: unknown) {
       setError(
         requestError instanceof Error
@@ -256,6 +352,7 @@ export function CreateBatchModal({
             onChange={(event) => {
               setDescription(event.target.value);
               setAnalysis(null);
+              setUsage(null);
               setError(null);
             }}
             placeholder={SAMPLE_DESCRIPTION}
@@ -285,7 +382,9 @@ export function CreateBatchModal({
           </button>
         </form>
 
-        {analysis && <AnalysisPreview analysis={analysis} />}
+        {analysis && usage && (
+          <AnalysisPreview analysis={analysis} usage={usage} />
+        )}
       </div>
 
       {analysis && (
