@@ -7,13 +7,15 @@ const nullableDimensionSchema = z
   .max(1_000)
   .nullable();
 
+export const orderDescriptionSchema = z
+  .string()
+  .trim()
+  .min(10, "Mô tả đơn hàng phải có ít nhất 10 ký tự.")
+  .max(2_000, "Mô tả đơn hàng không được vượt quá 2.000 ký tự.");
+
 export const analyzeOrderRequestSchema = z
   .object({
-    description: z
-      .string()
-      .trim()
-      .min(10, "Mô tả đơn hàng phải có ít nhất 10 ký tự.")
-      .max(2_000, "Mô tả đơn hàng không được vượt quá 2.000 ký tự."),
+    description: orderDescriptionSchema,
   })
   .strict();
 
@@ -92,6 +94,15 @@ export const orderAnalysisSchema = z
   })
   .strict();
 
+export const createBatchRequestSchema = z
+  .object({
+    rawDescription: orderDescriptionSchema,
+    analysis: orderAnalysisSchema,
+  })
+  .strict();
+
+export const batchIdSchema = z.string().trim().min(1).max(100);
+
 const jsonSchema = z.toJSONSchema(orderAnalysisSchema, {
   target: "draft-7",
 }) as Record<string, unknown>;
@@ -100,4 +111,5 @@ export const orderAnalysisJsonSchema = { ...jsonSchema };
 delete orderAnalysisJsonSchema.$schema;
 
 export type AnalyzeOrderRequest = z.infer<typeof analyzeOrderRequestSchema>;
+export type CreateBatchRequest = z.infer<typeof createBatchRequestSchema>;
 export type OrderAnalysis = z.infer<typeof orderAnalysisSchema>;

@@ -3,6 +3,7 @@ import { describe, it } from "node:test";
 
 import {
   analyzeOrderRequestSchema,
+  createBatchRequestSchema,
   orderAnalysisJsonSchema,
   orderAnalysisSchema,
 } from "@/lib/schemas";
@@ -77,5 +78,19 @@ describe("AI order analysis schemas", () => {
   it("sinh JSON Schema tương thích Gemini từ cùng Zod schema", () => {
     assert.equal(orderAnalysisJsonSchema.type, "object");
     assert.equal("$schema" in orderAnalysisJsonSchema, false);
+  });
+
+  it("validate lại raw description và AI analysis khi tạo batch", () => {
+    const validResult = createBatchRequestSchema.safeParse({
+      rawDescription: sampleDescription,
+      analysis: sampleAnalysis,
+    });
+    const invalidResult = createBatchRequestSchema.safeParse({
+      rawDescription: sampleDescription,
+      analysis: { ...sampleAnalysis, quantity: 0 },
+    });
+
+    assert.equal(validResult.success, true);
+    assert.equal(invalidResult.success, false);
   });
 });

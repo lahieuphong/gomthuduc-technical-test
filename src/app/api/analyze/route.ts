@@ -1,22 +1,6 @@
 import { AIServiceError, analyzeOrderDescription } from "@/lib/ai";
+import { errorResponse, successResponse } from "@/lib/api-response";
 import { analyzeOrderRequestSchema } from "@/lib/schemas";
-
-type ApiErrorCode =
-  | "INVALID_JSON"
-  | "INVALID_INPUT"
-  | "AI_INVALID_RESPONSE"
-  | "AI_SERVICE_UNAVAILABLE"
-  | "INTERNAL_ERROR";
-
-function errorResponse(code: ApiErrorCode, message: string, status: number) {
-  return Response.json(
-    {
-      success: false,
-      error: { code, message },
-    },
-    { status },
-  );
-}
 
 export async function POST(request: Request) {
   let requestBody: unknown;
@@ -46,10 +30,7 @@ export async function POST(request: Request) {
       validationResult.data.description,
     );
 
-    return Response.json({
-      success: true,
-      data: analysis,
-    });
+    return successResponse(analysis);
   } catch (error: unknown) {
     if (error instanceof AIServiceError) {
       if (error.code === "AI_INVALID_RESPONSE") {
