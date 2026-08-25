@@ -4,7 +4,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { Stage } from "@/generated/prisma/enums";
 import { apiRequest } from "@/lib/api-client";
-import type { BatchRecord } from "@/types/api";
+import type { AIUsageSummary, BatchRecord } from "@/types/api";
+import { AIUsagePanel } from "@/components/ai-usage-panel";
 import { BatchDetailDrawer } from "@/components/batch-detail-drawer";
 import { CreateBatchModal } from "@/components/create-batch-modal";
 import { KanbanBoard } from "@/components/kanban-board";
@@ -20,14 +21,40 @@ type ToastState = {
 };
 
 const TOAST_STYLES: Record<ToastKind, string> = {
-  success: "border-emerald-200 bg-emerald-50 text-emerald-800",
-  warning: "border-amber-200 bg-amber-50 text-amber-900",
-  error: "border-red-200 bg-red-50 text-red-800",
+  success: "border-emerald-800 bg-emerald-950 text-emerald-50",
+  warning: "border-amber-700 bg-amber-950 text-amber-50",
+  error: "border-red-700 bg-red-950 text-red-50",
 };
+
+function BrandMark() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="h-6 w-6"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M8 3.75h8M9 6.5h6c0 2.1.8 3.1 2.3 4.55 1.35 1.3 2.2 3.03 2.2 4.95 0 2.75-2.2 4.25-7.5 4.25S4.5 18.75 4.5 16c0-1.92.85-3.65 2.2-4.95C8.2 9.6 9 8.6 9 6.5Z"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M6.25 15.5c2.75 1.15 8.75 1.15 11.5 0"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+}
 
 export function ProductionDashboard() {
   const latestRequestIdRef = useRef(0);
   const [batches, setBatches] = useState<BatchRecord[]>([]);
+  const [aiUsage, setAIUsage] = useState<AIUsageSummary | null>(null);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
@@ -46,13 +73,19 @@ export function ProductionDashboard() {
     const requestId = ++latestRequestIdRef.current;
 
     try {
-      const result = await apiRequest<BatchRecord[]>("/api/batches");
+      const [batchesResult, usageResult] = await Promise.all([
+        apiRequest<BatchRecord[]>("/api/batches"),
+        apiRequest<AIUsageSummary>("/api/ai-usage").catch(() => null),
+      ]);
 
       if (requestId !== latestRequestIdRef.current) {
         return;
       }
 
-      setBatches(result.data);
+      setBatches(batchesResult.data);
+      if (usageResult) {
+        setAIUsage(usageResult.data);
+      }
       setLastUpdated(new Date());
       setLoadError(null);
     } catch (requestError: unknown) {
@@ -116,6 +149,7 @@ export function ProductionDashboard() {
         label: "Tổng mẻ",
         value: batches.length,
         accent: "bg-stone-900",
+        caption: "Trong hệ thống",
       },
       {
         label: "Đang sản xuất",
@@ -123,18 +157,21 @@ export function ProductionDashboard() {
           (batch) => batch.currentStage !== Stage.COMPLETED,
         ).length,
         accent: "bg-sky-600",
+        caption: "Đang vận hành",
       },
       {
         label: "Đang nung",
         value: batches.filter((batch) => batch.currentStage === Stage.FIRING)
           .length,
         accent: "bg-orange-600",
+        caption: "Trong lò",
       },
       {
         label: "Đang QC",
         value: batches.filter((batch) => batch.currentStage === Stage.QC)
           .length,
         accent: "bg-violet-600",
+        caption: "Chờ kiểm định",
       },
       {
         label: "Hoàn thành",
@@ -142,6 +179,7 @@ export function ProductionDashboard() {
           (batch) => batch.currentStage === Stage.COMPLETED,
         ).length,
         accent: "bg-emerald-700",
+        caption: "Đã hoàn tất",
       },
     ],
     [batches],
@@ -157,91 +195,129 @@ export function ProductionDashboard() {
   );
 
   return (
-    <main className="min-h-screen bg-[#f6f5f2] text-stone-900">
-      <header className="border-b border-stone-200 bg-white">
-        <div className="mx-auto flex max-w-[1680px] flex-col gap-5 px-4 py-5 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-          <div className="flex items-center gap-3.5">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-stone-900 text-2xl text-white shadow-sm">
-              <span aria-hidden="true">🏺</span>
+    <main className="min-h-screen text-stone-900">
+      <header className="border-b border-[#ded8cf] bg-[#fffdf9]/95 backdrop-blur">
+        <div className="mx-auto flex max-w-[1920px] items-center justify-between gap-4 px-4 py-3.5 sm:px-6 lg:px-8">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[13px] bg-stone-900 text-[#f6d8c8] shadow-[0_4px_12px_rgb(28_25_23/14%)]">
+              <BrandMark />
             </div>
-            <div>
-              <p className="text-xs font-bold tracking-[0.2em] text-amber-700 uppercase">
-                Ceramics Manufacturing
-              </p>
-              <h1 className="mt-0.5 text-2xl font-bold tracking-tight text-stone-950 sm:text-3xl">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <p className="hidden text-[10px] font-bold tracking-[0.18em] text-[#9f4b2e] uppercase sm:block">
+                  Ceramics Manufacturing
+                </p>
+                <span className="hidden h-1 w-1 rounded-full bg-stone-300 sm:block" />
+                <p className="hidden text-[10px] font-semibold text-stone-400 sm:block">
+                  Production Control
+                </p>
+              </div>
+              <h1 className="truncate font-display text-xl font-bold tracking-[-0.02em] text-stone-950 sm:text-[23px]">
                 Gốm Production Pipeline
               </h1>
-              <p className="mt-1 text-sm text-stone-500">
+              <p className="mt-0.5 hidden text-[11px] text-stone-500 sm:block">
                 Điều phối &amp; giám sát quy trình sản xuất
               </p>
             </div>
           </div>
 
-          <button
-            className="inline-flex min-h-12 items-center justify-center rounded-xl bg-amber-700 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-amber-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-700"
-            onClick={() => {
-              setSelectedBatchId(null);
-              setIsCreateOpen(true);
-            }}
-            type="button"
-          >
-            + Tạo mẻ sản xuất
-          </button>
+          <div className="flex shrink-0 items-center gap-3">
+            <div className="hidden items-center gap-2 text-[11px] font-medium text-stone-500 lg:flex">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60 motion-reduce:animate-none" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-600" />
+              </span>
+              Hệ thống đang hoạt động
+            </div>
+            <button
+              className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-[#9f4b2e] px-3.5 py-2 text-xs font-bold text-white shadow-[0_5px_14px_rgb(159_75_46/20%)] transition hover:bg-[#843d26] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9f4b2e] sm:px-4 sm:text-sm"
+              onClick={() => {
+                setSelectedBatchId(null);
+                setIsCreateOpen(true);
+              }}
+              type="button"
+            >
+              <span aria-hidden="true" className="text-lg leading-none">
+                +
+              </span>
+              <span className="hidden sm:inline">Tạo mẻ sản xuất</span>
+              <span className="sm:hidden">Tạo mẻ</span>
+            </button>
+          </div>
         </div>
       </header>
 
-      <div className="mx-auto max-w-[1680px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-        <section aria-label="Thống kê sản xuất">
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
+      <div className="mx-auto max-w-[1920px] px-4 py-4 sm:px-6 lg:px-8 lg:py-5">
+        <section
+          aria-label="Thống kê sản xuất"
+          className="overflow-hidden rounded-[18px] border border-[#ddd7ce] bg-[#ddd7ce] shadow-[0_1px_2px_rgb(28_25_23/4%)]"
+        >
+          <div className="flex flex-col gap-1 bg-[#fffdf9] px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-[10px] font-bold tracking-[0.14em] text-[#9f4b2e] uppercase">
+                Tổng quan hôm nay
+              </p>
+              <h2 className="mt-0.5 text-sm font-bold text-stone-900">
+                Tình hình sản xuất
+              </h2>
+            </div>
+            <div className="flex items-center gap-2 text-[10px] text-stone-500">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
+              Tự động cập nhật mỗi 2 giây
+              {lastUpdated
+                ? ` · ${new Intl.DateTimeFormat("vi-VN", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                  }).format(lastUpdated)}`
+                : ""}
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-px md:grid-cols-5">
             {statistics.map((statistic) => (
               <article
-                className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm sm:p-5"
+                className="last:col-span-2 flex min-h-[72px] items-center justify-between gap-3 bg-[#fffdf9] px-4 py-3 md:last:col-span-1"
                 key={statistic.label}
               >
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-xs font-bold tracking-wide text-stone-500 uppercase">
+                <div className="min-w-0">
+                  <span className="block truncate text-[10px] font-bold tracking-[0.08em] text-stone-500 uppercase">
                     {statistic.label}
                   </span>
-                  <span
-                    aria-hidden="true"
-                    className={`h-2.5 w-2.5 rounded-full ${statistic.accent}`}
-                  />
+                  <span className="mt-0.5 block truncate text-[10px] text-stone-400">
+                    {statistic.caption}
+                  </span>
                 </div>
-                <p className="mt-3 text-3xl font-bold tracking-tight text-stone-950">
+                <p className="text-2xl font-bold tracking-[-0.04em] text-stone-950 tabular-nums">
                   {statistic.value.toLocaleString("vi-VN")}
                 </p>
+                <span
+                  aria-hidden="true"
+                  className={`h-2 w-2 shrink-0 rounded-full ${statistic.accent}`}
+                />
               </article>
             ))}
           </div>
         </section>
 
-        <section className="mt-8" aria-labelledby="kanban-title">
-          <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <AIUsagePanel usage={aiUsage} />
+
+        <section className="mt-5" aria-labelledby="kanban-title">
+          <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-xs font-bold tracking-[0.16em] text-amber-700 uppercase">
+              <p className="text-[10px] font-bold tracking-[0.16em] text-[#9f4b2e] uppercase">
                 Luồng sản xuất
               </p>
               <h2
-                className="mt-1 text-xl font-bold tracking-tight text-stone-950"
+                className="mt-0.5 font-display text-xl font-bold tracking-[-0.02em] text-stone-950"
                 id="kanban-title"
               >
-                Bảng Kanban công đoạn
+                Tiến độ theo công đoạn
               </h2>
             </div>
-            <div className="flex items-center gap-2 text-xs text-stone-500">
-              <span
-                aria-hidden="true"
-                className="h-2 w-2 rounded-full bg-emerald-500"
-              />
-              <span>
-                Tự động cập nhật mỗi 2 giây
-                {lastUpdated
-                  ? ` · ${new Intl.DateTimeFormat("vi-VN", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      second: "2-digit",
-                    }).format(lastUpdated)}`
-                  : ""}
+            <div className="flex items-center gap-2 text-[10px] font-medium text-stone-500 2xl:hidden">
+              <span aria-hidden="true">Kéo ngang để xem toàn bộ quy trình</span>
+              <span aria-hidden="true" className="text-[#9f4b2e]">
+                →
               </span>
             </div>
           </div>
@@ -263,10 +339,10 @@ export function ProductionDashboard() {
           )}
 
           {isInitialLoading && batches.length === 0 ? (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-8">
               {Array.from({ length: 4 }, (_, index) => (
                 <div
-                  className="h-72 animate-pulse rounded-2xl bg-stone-200"
+                  className="h-48 animate-pulse rounded-[16px] bg-stone-200 motion-reduce:animate-none"
                   key={index}
                 />
               ))}
@@ -284,7 +360,7 @@ export function ProductionDashboard() {
               </button>
             </div>
           ) : (
-            <div className="kanban-viewport lg:overflow-x-auto">
+            <div className="kanban-viewport overflow-x-auto overscroll-x-contain">
               <KanbanBoard
                 batches={batches}
                 onSelectBatch={(id) => {
@@ -316,7 +392,8 @@ export function ProductionDashboard() {
 
       {toast && (
         <div
-          className={`fixed right-4 bottom-4 z-[70] max-w-md rounded-2xl border px-4 py-3 text-sm font-semibold shadow-xl sm:right-6 sm:bottom-6 ${TOAST_STYLES[toast.kind]}`}
+          aria-live="polite"
+          className={`fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-[70] rounded-xl border px-4 py-3 text-sm font-semibold shadow-[0_14px_40px_rgb(28_25_23/22%)] sm:right-6 sm:left-auto sm:max-w-md ${TOAST_STYLES[toast.kind]}`}
           key={toast.id}
           role={toast.kind === "error" ? "alert" : "status"}
         >

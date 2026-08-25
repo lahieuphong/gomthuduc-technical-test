@@ -8,6 +8,7 @@ import type {
   QcReportRequest,
 } from "@/lib/schemas";
 import type { AIUsage as GeminiAIUsage } from "@/lib/ai-usage";
+import type { AIUsageSummary as GeminiAIUsageSummary } from "@/lib/ai-usage";
 
 export type ApiWarning = {
   code: "TELEGRAM_FAILED";
@@ -21,6 +22,7 @@ export type ApiResult<T> = {
 
 export type OrderAnalysis = ValidatedOrderAnalysis;
 export type AIUsage = GeminiAIUsage;
+export type AIUsageSummary = GeminiAIUsageSummary;
 
 export type AnalyzeOrderResult = {
   analysis: OrderAnalysis;

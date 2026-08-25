@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { addAIUsage, createAIUsage } from "@/lib/ai-usage";
+import {
+  addAIUsage,
+  createAIUsage,
+  summarizeAIUsage,
+} from "@/lib/ai-usage";
 
 describe("AI usage aggregation", () => {
   it("records token metadata from one Gemini response", () => {
@@ -56,5 +60,38 @@ describe("AI usage aggregation", () => {
     assert.equal(usage.promptTokenCount, 0);
     assert.equal(usage.candidatesTokenCount, 0);
     assert.equal(usage.totalTokenCount, 0);
+  });
+
+  it("preserves per-model totals in the aggregate usage summary", () => {
+    const models = [
+      {
+        ...addAIUsage(createAIUsage("gemini-a"), {
+          promptTokenCount: 100,
+          candidatesTokenCount: 50,
+          totalTokenCount: 150,
+        }),
+        analysisCount: 1,
+      },
+      {
+        ...addAIUsage(createAIUsage("gemini-b"), {
+          promptTokenCount: 200,
+          candidatesTokenCount: 75,
+          thoughtsTokenCount: 25,
+          totalTokenCount: 300,
+        }),
+        analysisCount: 1,
+      },
+    ];
+
+    const summary = summarizeAIUsage(models, "2026-08-25T00:00:00.000Z");
+
+    assert.equal(summary.models.length, 2);
+    assert.equal(summary.analysisCount, 2);
+    assert.equal(summary.requestCount, 2);
+    assert.equal(summary.promptTokenCount, 300);
+    assert.equal(summary.candidatesTokenCount, 125);
+    assert.equal(summary.thoughtsTokenCount, 25);
+    assert.equal(summary.totalTokenCount, 450);
+    assert.equal(summary.lastRecordedAt, "2026-08-25T00:00:00.000Z");
   });
 });

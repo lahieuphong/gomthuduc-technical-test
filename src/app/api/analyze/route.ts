@@ -1,6 +1,17 @@
 import { AIServiceError, analyzeOrderDescription } from "@/lib/ai";
 import { errorResponse, successResponse } from "@/lib/api-response";
+import { recordAIUsage } from "@/lib/ai-usage-store";
 import { analyzeOrderRequestSchema } from "@/lib/schemas";
+
+async function persistAIUsage(usage: Parameters<typeof recordAIUsage>[0]) {
+  try {
+    await recordAIUsage(usage);
+  } catch (error: unknown) {
+    console.error("Could not persist Gemini usage.", {
+      errorType: error instanceof Error ? error.name : typeof error,
+    });
+  }
+}
 
 export async function POST(request: Request) {
   let requestBody: unknown;
@@ -30,9 +41,15 @@ export async function POST(request: Request) {
       validationResult.data.description,
     );
 
+    await persistAIUsage(result.usage);
+
     return successResponse(result);
   } catch (error: unknown) {
     if (error instanceof AIServiceError) {
+      if (error.usage) {
+        await persistAIUsage(error.usage);
+      }
+
       if (error.code === "AI_INVALID_RESPONSE") {
         return errorResponse(
           "AI_INVALID_RESPONSE",

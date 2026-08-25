@@ -9,6 +9,16 @@ export type AIUsage = {
   totalTokenCount: number;
 };
 
+export type AIUsageModelSummary = AIUsage & {
+  analysisCount: number;
+};
+
+export type AIUsageSummary = Omit<AIUsage, "model"> & {
+  models: AIUsageModelSummary[];
+  analysisCount: number;
+  lastRecordedAt: string | null;
+};
+
 type GeminiUsageMetadata = {
   promptTokenCount?: number;
   candidatesTokenCount?: number;
@@ -75,4 +85,39 @@ export function addAIUsage(
       current.toolUsePromptTokenCount + toolUsePromptTokenCount,
     totalTokenCount: current.totalTokenCount + totalTokenCount,
   };
+}
+
+export function summarizeAIUsage(
+  models: AIUsageModelSummary[],
+  lastRecordedAt: string | null,
+): AIUsageSummary {
+  return models.reduce<AIUsageSummary>(
+    (summary, model) => ({
+      ...summary,
+      analysisCount: summary.analysisCount + model.analysisCount,
+      requestCount: summary.requestCount + model.requestCount,
+      promptTokenCount: summary.promptTokenCount + model.promptTokenCount,
+      candidatesTokenCount:
+        summary.candidatesTokenCount + model.candidatesTokenCount,
+      thoughtsTokenCount:
+        summary.thoughtsTokenCount + model.thoughtsTokenCount,
+      cachedContentTokenCount:
+        summary.cachedContentTokenCount + model.cachedContentTokenCount,
+      toolUsePromptTokenCount:
+        summary.toolUsePromptTokenCount + model.toolUsePromptTokenCount,
+      totalTokenCount: summary.totalTokenCount + model.totalTokenCount,
+    }),
+    {
+      models,
+      analysisCount: 0,
+      requestCount: 0,
+      promptTokenCount: 0,
+      candidatesTokenCount: 0,
+      thoughtsTokenCount: 0,
+      cachedContentTokenCount: 0,
+      toolUsePromptTokenCount: 0,
+      totalTokenCount: 0,
+      lastRecordedAt,
+    },
+  );
 }

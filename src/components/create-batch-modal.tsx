@@ -30,15 +30,18 @@ type CreateBatchModalProps = {
 type PreviewItemProps = {
   label: string;
   value: string;
+  className?: string;
 };
 
-function PreviewItem({ label, value }: PreviewItemProps) {
+function PreviewItem({ label, value, className = "" }: PreviewItemProps) {
   return (
-    <div className="rounded-xl border border-stone-200 bg-stone-50 px-3 py-2.5">
-      <dt className="text-[10px] font-bold tracking-wide text-stone-400 uppercase">
+    <div className={`bg-white px-3.5 py-3 ${className}`}>
+      <dt className="text-[10px] font-bold tracking-[0.08em] text-stone-400 uppercase">
         {label}
       </dt>
-      <dd className="mt-1 text-sm font-semibold text-stone-800">{value}</dd>
+      <dd className="mt-1 text-sm leading-5 font-semibold text-[#29231f]">
+        {value}
+      </dd>
     </div>
   );
 }
@@ -59,61 +62,58 @@ function formatDimensions(analysis: OrderAnalysis): string {
 
 function TokenUsage({ usage }: { usage: AIUsage }) {
   const tokenItems = [
-    { label: "Input", value: usage.promptTokenCount },
-    { label: "Output", value: usage.candidatesTokenCount },
+    { label: "Đầu vào", value: usage.promptTokenCount },
+    { label: "Đầu ra", value: usage.candidatesTokenCount },
     { label: "Suy luận", value: usage.thoughtsTokenCount },
     { label: "Tổng", value: usage.totalTokenCount },
   ];
 
   return (
-    <section className="mt-4 rounded-2xl border border-sky-200 bg-sky-50/70 p-4 sm:p-5">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+    <section className="mt-3 rounded-[16px] border border-[#dfe6e8] bg-[#f5f8f8] px-4 py-3.5">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <p className="text-xs font-bold tracking-wide text-sky-800 uppercase">
-            Mức sử dụng Gemini
+          <p className="text-[10px] font-bold tracking-[0.14em] text-[#38606a] uppercase">
+            Gemini · Mức sử dụng
           </p>
-          <h4 className="mt-1 text-base font-bold text-stone-900">
-            {usage.totalTokenCount.toLocaleString("vi-VN")} token cho lần phân
-            tích này
-          </h4>
+          <p className="mt-0.5 text-sm font-semibold text-stone-800">
+            {usage.totalTokenCount.toLocaleString("vi-VN")} token ·{" "}
+            {usage.requestCount} lượt gọi
+            {usage.requestCount > 1 ? " (gồm lần thử lại)" : ""}
+          </p>
         </div>
-        <span className="w-fit rounded-full bg-white px-3 py-1 font-mono text-xs font-bold text-sky-800 shadow-sm">
+        <span className="w-fit rounded-full border border-[#d9e2e4] bg-white px-2.5 py-1 font-mono text-[10px] font-bold text-[#38606a]">
           {usage.model}
         </span>
       </div>
 
-      <dl className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <dl className="mt-3 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-[#e1e7e8] bg-[#e1e7e8] sm:grid-cols-4">
         {tokenItems.map((item) => (
-          <div
-            className="rounded-xl border border-sky-100 bg-white px-3 py-2.5"
-            key={item.label}
-          >
-            <dt className="text-[10px] font-bold tracking-wide text-stone-400 uppercase">
+          <div className="bg-white px-3 py-2" key={item.label}>
+            <dt className="text-[9px] font-bold tracking-[0.08em] text-stone-400 uppercase">
               {item.label}
             </dt>
-            <dd className="mt-1 text-lg font-bold text-stone-900">
+            <dd className="mt-0.5 text-sm font-bold text-stone-800">
               {item.value.toLocaleString("vi-VN")}
             </dd>
           </div>
         ))}
       </dl>
 
-      <p className="mt-3 text-xs leading-5 text-sky-950">
-        Số liệu thực do Gemini trả về, đã cộng {usage.requestCount} lượt gọi
-        {usage.requestCount > 1 ? " (bao gồm lần thử lại)" : ""}. Tổng token đã
-        gồm input, output và token suy luận.
+      <p className="mt-2.5 text-[11px] leading-4 text-[#48646b]">
+        Số liệu thực do Gemini trả về. Tổng token đã gồm input, output và token
+        suy luận.
       </p>
 
       {usage.cachedContentTokenCount > 0 && (
-        <p className="mt-1 text-xs text-sky-900">
+        <p className="mt-1 text-[11px] text-[#48646b]">
           Trong input có {usage.cachedContentTokenCount.toLocaleString("vi-VN")}
           {" "}token từ cache.
         </p>
       )}
 
-      <div className="mt-3 flex flex-wrap items-center gap-2">
+      <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1">
         <a
-          className="rounded-lg border border-sky-300 bg-white px-3 py-2 text-xs font-bold text-sky-800 hover:bg-sky-100"
+          className="text-[11px] font-bold text-[#38606a] underline decoration-[#9ab0b5] underline-offset-4 hover:text-[#243f46] focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#38606a]"
           href="https://aistudio.google.com/usage"
           rel="noreferrer"
           target="_blank"
@@ -121,7 +121,7 @@ function TokenUsage({ usage }: { usage: AIUsage }) {
           Xem mức sử dụng ↗
         </a>
         <a
-          className="rounded-lg border border-sky-300 bg-white px-3 py-2 text-xs font-bold text-sky-800 hover:bg-sky-100"
+          className="text-[11px] font-bold text-[#38606a] underline decoration-[#9ab0b5] underline-offset-4 hover:text-[#243f46] focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#38606a]"
           href="https://aistudio.google.com/rate-limit?timeRange=last-28-days"
           rel="noreferrer"
           target="_blank"
@@ -130,7 +130,7 @@ function TokenUsage({ usage }: { usage: AIUsage }) {
         </a>
       </div>
 
-      <p className="mt-2 text-[11px] leading-4 text-stone-500">
+      <p className="mt-2 text-[10px] leading-4 text-stone-500">
         Gemini không trả quota miễn phí còn lại trong từng response; AI Studio
         là nguồn chính xác theo project của bạn.
       </p>
@@ -146,23 +146,32 @@ function AnalysisPreview({
   usage: AIUsage;
 }) {
   return (
-    <section className="mt-6 border-t border-stone-200 pt-6">
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <p className="text-xs font-bold tracking-[0.16em] text-amber-700 uppercase">
-            Bước 2
-          </p>
-          <h3 className="mt-1 text-lg font-bold text-stone-900">
-            Kiểm tra kết quả AI
-          </h3>
+    <section className="mt-4 rounded-[18px] border border-[#e8ded5] bg-white p-4 shadow-[0_8px_28px_rgba(61,43,32,0.05)] sm:p-5">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#9f4b2e] text-xs font-bold text-white">
+            02
+          </span>
+          <div>
+            <p className="text-[10px] font-bold tracking-[0.14em] text-[#9f4b2e] uppercase">
+              Bước 2 · Xác nhận
+            </p>
+            <h3 className="mt-0.5 text-base font-bold text-[#1c1917]">
+              Kiểm tra kết quả AI
+            </h3>
+          </div>
         </div>
-        <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
-          Sẵn sàng xác nhận
+        <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-bold text-emerald-700">
+          Sẵn sàng
         </span>
       </div>
 
-      <dl className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3">
-        <PreviewItem label="Sản phẩm" value={analysis.productName} />
+      <dl className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-[14px] border border-stone-200 bg-stone-200 sm:grid-cols-3">
+        <PreviewItem
+          className="col-span-2"
+          label="Sản phẩm"
+          value={analysis.productName}
+        />
         <PreviewItem
           label="Số lượng"
           value={`${analysis.quantity.toLocaleString("vi-VN")} sản phẩm`}
@@ -191,24 +200,32 @@ function AnalysisPreview({
           label="Độ ưu tiên"
           value={PRIORITY_LABELS[analysis.priority]}
         />
-        <PreviewItem label="Lý do ưu tiên" value={analysis.priorityReason} />
+        <PreviewItem
+          className="col-span-2 sm:col-span-3"
+          label="Lý do ưu tiên"
+          value={analysis.priorityReason}
+        />
       </dl>
 
-      <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50/70 p-4">
-        <p className="text-xs font-bold tracking-wide text-amber-800 uppercase">
+      <div className="mt-3 rounded-[14px] border border-[#eadfce] bg-[#fcf8ef] px-3.5 py-3">
+        <p className="text-[10px] font-bold tracking-[0.1em] text-[#80552b] uppercase">
           Các giả định của AI
         </p>
         {analysis.assumptions.length > 0 ? (
-          <ul className="mt-2 space-y-1.5 text-sm leading-6 text-amber-950">
+          <ul className="mt-2 space-y-1 text-xs leading-5 text-[#594638]">
             {analysis.assumptions.map((assumption, index) => (
               <li className="flex gap-2" key={`${assumption}-${index}`}>
-                <span aria-hidden="true">•</span>
+                <span className="text-[#9f4b2e]" aria-hidden="true">
+                  •
+                </span>
                 <span>{assumption}</span>
               </li>
             ))}
           </ul>
         ) : (
-          <p className="mt-2 text-sm text-amber-900">Không có giả định bổ sung.</p>
+          <p className="mt-2 text-xs text-[#6d594b]">
+            Không có giả định bổ sung.
+          </p>
         )}
       </div>
 
@@ -302,50 +319,73 @@ export function CreateBatchModal({
       onClose={handleClose}
       variant="modal"
     >
-      <div className="sticky top-0 z-10 flex items-center justify-between border-b border-stone-200 bg-white/95 px-5 py-4 backdrop-blur sm:px-7">
-        <div>
-          <p className="text-xs font-bold tracking-[0.16em] text-amber-700 uppercase">
-            Mẻ sản xuất mới
+      <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#e8ded5] bg-[#fffdf9]/95 px-4 py-3.5 backdrop-blur sm:px-6">
+        <div className="min-w-0">
+          <p className="text-[10px] font-bold tracking-[0.16em] text-[#9f4b2e] uppercase">
+            Mẻ sản xuất mới · AI hỗ trợ
           </p>
           <h2
-            className="mt-1 text-xl font-bold tracking-tight text-stone-950"
+            className="mt-0.5 truncate text-lg font-bold tracking-tight text-[#1c1917] sm:text-xl"
             id="create-batch-title"
           >
-            Tạo mẻ từ mô tả đơn hàng
+            Tạo mẻ sản xuất
           </h2>
         </div>
-        <button
-          aria-label="Đóng"
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-stone-200 text-2xl leading-none text-stone-500 hover:bg-stone-100 disabled:opacity-40"
-          disabled={isBusy}
-          onClick={handleClose}
-          type="button"
-        >
-          ×
-        </button>
+        <div className="ml-4 flex items-center gap-3">
+          <ol
+            aria-label="Tiến trình tạo mẻ"
+            className="hidden items-center gap-1.5 text-[10px] font-bold text-stone-400 sm:flex"
+          >
+            <li className="flex items-center gap-1.5 text-[#9f4b2e]">
+              <span className="h-1.5 w-1.5 rounded-full bg-current" />
+              Mô tả
+            </li>
+            <li aria-hidden="true" className="h-px w-5 bg-stone-300" />
+            <li className={analysis ? "text-[#9f4b2e]" : "text-stone-400"}>
+              Xác nhận
+            </li>
+          </ol>
+          <button
+            aria-label="Đóng"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#e4d9d0] bg-white text-xl leading-none text-stone-500 transition hover:border-[#c9b6a8] hover:bg-[#f8f3ed] hover:text-stone-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9f4b2e] disabled:opacity-40"
+            disabled={isBusy}
+            onClick={handleClose}
+            type="button"
+          >
+            ×
+          </button>
+        </div>
       </div>
 
-      <div className="p-5 sm:p-7">
-        <form onSubmit={handleAnalyze}>
-          <div className="flex items-end justify-between gap-3">
-            <div>
-              <p className="text-xs font-bold tracking-[0.16em] text-amber-700 uppercase">
-                Bước 1
-              </p>
-              <label
-                className="mt-1 block text-lg font-bold text-stone-900"
-                htmlFor="order-description"
-              >
-                Mô tả đơn hàng
-              </label>
+      <div className="bg-[#f8f4ee] p-4 sm:p-5">
+        <form
+          className="rounded-[18px] border border-[#e8ded5] bg-white p-4 shadow-[0_8px_28px_rgba(61,43,32,0.05)] sm:p-5"
+          onSubmit={handleAnalyze}
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#efe2d8] text-xs font-bold text-[#8d4128]">
+                01
+              </span>
+              <div>
+                <p className="text-[10px] font-bold tracking-[0.14em] text-[#9f4b2e] uppercase">
+                  Bước 1 · Nhập yêu cầu
+                </p>
+                <label
+                  className="mt-0.5 block text-base font-bold text-[#1c1917]"
+                  htmlFor="order-description"
+                >
+                  Mô tả đơn hàng
+                </label>
+              </div>
             </div>
-            <span className="text-xs text-stone-400">
+            <span className="pt-1 text-[10px] font-medium text-stone-400">
               {description.length}/2.000
             </span>
           </div>
 
           <textarea
-            className="mt-4 min-h-36 w-full resize-y rounded-2xl border border-stone-300 bg-white px-4 py-3 text-sm leading-6 text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-amber-600 focus:ring-4 focus:ring-amber-100"
+            className="mt-3 min-h-28 w-full resize-y rounded-[14px] border border-[#dcd2ca] bg-[#fffdfa] px-3.5 py-3 text-sm leading-6 text-[#29231f] outline-none transition placeholder:text-stone-400 focus:border-[#9f4b2e] focus:ring-3 focus:ring-[#ecd8ce] disabled:bg-stone-50"
             disabled={isBusy}
             id="order-description"
             maxLength={2000}
@@ -362,7 +402,7 @@ export function CreateBatchModal({
 
           {error && (
             <p
-              className="mt-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
+              className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3.5 py-2.5 text-xs font-medium text-red-700"
               role="alert"
             >
               {error}
@@ -370,7 +410,7 @@ export function CreateBatchModal({
           )}
 
           <button
-            className="mt-4 inline-flex min-h-11 items-center justify-center rounded-xl bg-stone-900 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-50"
+            className="mt-3 inline-flex min-h-10 w-full items-center justify-center rounded-xl bg-[#1c1917] px-4 py-2.5 text-sm font-bold text-white shadow-[0_5px_14px_rgba(28,25,23,0.16)] transition hover:bg-[#302b27] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9f4b2e] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
             disabled={isBusy || description.trim().length < 10}
             type="submit"
           >
@@ -388,9 +428,9 @@ export function CreateBatchModal({
       </div>
 
       {analysis && (
-        <footer className="sticky bottom-0 flex flex-col-reverse gap-3 border-t border-stone-200 bg-white/95 px-5 py-4 backdrop-blur sm:flex-row sm:justify-end sm:px-7">
+        <footer className="sticky bottom-0 flex flex-col-reverse gap-2 border-t border-[#e8ded5] bg-[#fffdf9]/95 px-4 py-3 backdrop-blur sm:flex-row sm:justify-end sm:px-6">
           <button
-            className="min-h-11 rounded-xl border border-stone-300 px-5 py-2.5 text-sm font-bold text-stone-700 hover:bg-stone-50 disabled:opacity-50"
+            className="min-h-10 rounded-xl border border-[#dcd2ca] bg-white px-4 py-2 text-sm font-bold text-stone-700 transition hover:bg-[#f8f3ed] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9f4b2e] disabled:opacity-50"
             disabled={isBusy}
             onClick={handleClose}
             type="button"
@@ -398,7 +438,7 @@ export function CreateBatchModal({
             Hủy
           </button>
           <button
-            className="min-h-11 rounded-xl bg-amber-700 px-5 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-amber-800 disabled:cursor-not-allowed disabled:opacity-50"
+            className="min-h-10 rounded-xl bg-[#9f4b2e] px-5 py-2 text-sm font-bold text-white shadow-[0_5px_14px_rgba(120,50,29,0.2)] transition hover:bg-[#873d26] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9f4b2e] disabled:cursor-not-allowed disabled:opacity-50"
             disabled={isBusy}
             onClick={handleCreate}
             type="button"

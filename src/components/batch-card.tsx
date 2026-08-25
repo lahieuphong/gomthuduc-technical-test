@@ -10,10 +10,17 @@ const PRIORITY_LABELS: Record<Priority, string> = {
 };
 
 const PRIORITY_STYLES: Record<Priority, string> = {
-  [Priority.LOW]: "border-slate-200 bg-slate-50 text-slate-600",
-  [Priority.MEDIUM]: "border-amber-200 bg-amber-50 text-amber-700",
-  [Priority.HIGH]: "border-orange-200 bg-orange-50 text-orange-700",
-  [Priority.URGENT]: "border-red-200 bg-red-50 text-red-700",
+  [Priority.LOW]: "bg-slate-100 text-slate-600",
+  [Priority.MEDIUM]: "bg-amber-50 text-amber-700",
+  [Priority.HIGH]: "bg-orange-50 text-orange-700",
+  [Priority.URGENT]: "bg-red-50 text-red-700",
+};
+
+const PRIORITY_DOTS: Record<Priority, string> = {
+  [Priority.LOW]: "bg-slate-400",
+  [Priority.MEDIUM]: "bg-amber-500",
+  [Priority.HIGH]: "bg-orange-500",
+  [Priority.URGENT]: "bg-red-500",
 };
 
 type BatchCardProps = {
@@ -25,53 +32,63 @@ export function BatchCard({ batch, onClick }: BatchCardProps) {
   return (
     <button
       aria-label={`Mở chi tiết mẻ ${batch.code}`}
-      className="group w-full rounded-2xl border border-stone-200 bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-700"
+      className="group w-full rounded-[15px] border border-[#ded8cf] bg-[#fffdfa] p-3 text-left shadow-[0_1px_2px_rgb(28_25_23/5%)] transition duration-200 hover:-translate-y-0.5 hover:border-[#c89884] hover:shadow-[0_8px_24px_rgb(80_52_39/10%)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9f4b2e]"
       onClick={onClick}
       type="button"
     >
-      <div className="flex items-start justify-between gap-3">
-        <span className="font-mono text-xs font-bold tracking-wide text-stone-500">
+      <div className="flex items-center justify-between gap-2">
+        <span className="min-w-0 truncate font-mono text-[10px] font-bold tracking-[0.04em] text-stone-500">
           {batch.code}
         </span>
         <span
-          className={`shrink-0 rounded-full border px-2 py-1 text-[10px] font-bold tracking-wide uppercase ${PRIORITY_STYLES[batch.priority]}`}
+          className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-2 py-1 text-[9px] font-bold tracking-[0.06em] uppercase ${PRIORITY_STYLES[batch.priority]}`}
         >
+          <span
+            aria-hidden="true"
+            className={`h-1.5 w-1.5 rounded-full ${PRIORITY_DOTS[batch.priority]}`}
+          />
           {PRIORITY_LABELS[batch.priority]}
         </span>
       </div>
 
-      <h3 className="mt-3 line-clamp-2 text-[15px] font-bold leading-5 text-stone-900 group-hover:text-amber-800">
+      <h3 className="mt-2.5 line-clamp-2 min-h-10 text-[14px] font-bold leading-5 text-stone-900 transition-colors group-hover:text-[#8b3e25]">
         {batch.productName}
       </h3>
 
-      <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-stone-600">
-        <div className="rounded-xl bg-stone-50 px-3 py-2">
-          <span className="block text-[10px] font-semibold tracking-wide text-stone-400 uppercase">
+      <dl className="mt-3 grid grid-cols-2 divide-x divide-stone-200 rounded-xl bg-[#f5f2ed] px-3 py-2">
+        <div className="pr-2">
+          <dt className="text-[9px] font-bold tracking-[0.08em] text-stone-400 uppercase">
             Số lượng
-          </span>
-          <span className="mt-0.5 block font-bold text-stone-800">
-            {batch.quantity.toLocaleString("vi-VN")} sản phẩm
-          </span>
+          </dt>
+          <dd className="mt-0.5 truncate text-xs font-bold text-stone-800">
+            {batch.quantity.toLocaleString("vi-VN")} sp
+          </dd>
         </div>
-        <div className="rounded-xl bg-stone-50 px-3 py-2">
-          <span className="block text-[10px] font-semibold tracking-wide text-stone-400 uppercase">
+        <div className="pl-3">
+          <dt className="text-[9px] font-bold tracking-[0.08em] text-stone-400 uppercase">
             Deadline
-          </span>
-          <span className="mt-0.5 block font-bold text-stone-800">
+          </dt>
+          <dd className="mt-0.5 text-xs font-bold text-stone-800">
             {batch.deadlineDays} ngày
-          </span>
+          </dd>
         </div>
-      </div>
+      </dl>
 
-      <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
-        <span className="rounded-full bg-stone-900 px-2.5 py-1 font-semibold text-white">
+      <div className="mt-2.5 flex min-w-0 items-center gap-1.5 text-[10px]">
+        <span className="min-w-0 truncate rounded-full bg-stone-900 px-2.5 py-1 font-semibold text-white">
           {getStageLabel(batch.currentStage)}
         </span>
         {batch.firingTemperatureC !== null && (
-          <span className="rounded-full bg-amber-50 px-2.5 py-1 font-semibold text-amber-800">
-            Nung {batch.firingTemperatureC}°C
+          <span className="shrink-0 rounded-full bg-[#f8eee8] px-2 py-1 font-semibold text-[#8b3e25]">
+            {batch.firingTemperatureC}°C
           </span>
         )}
+        <span
+          aria-hidden="true"
+          className="ml-auto shrink-0 text-sm text-stone-300 transition group-hover:translate-x-0.5 group-hover:text-[#9f4b2e]"
+        >
+          →
+        </span>
       </div>
     </button>
   );

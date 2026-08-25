@@ -91,3 +91,19 @@ model QCReport {
 
   @@index([batchId, createdAt])
 }
+
+model AiUsageRecord {
+  id                         String   @id @default(cuid())
+  model                      String
+  requestCount               Int
+  promptTokenCount           Int
+  candidatesTokenCount       Int
+  thoughtsTokenCount         Int
+  cachedContentTokenCount    Int
+  toolUsePromptTokenCount    Int
+  totalTokenCount            Int
+  createdAt                  DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([model])
+}

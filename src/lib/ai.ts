@@ -36,11 +36,13 @@ export type AIServiceErrorCode =
 
 export class AIServiceError extends Error {
   readonly code: AIServiceErrorCode;
+  readonly usage?: AIUsage;
 
-  constructor(code: AIServiceErrorCode) {
+  constructor(code: AIServiceErrorCode, usage?: AIUsage) {
     super(code);
     this.name = "AIServiceError";
     this.code = code;
+    this.usage = usage;
   }
 }
 
@@ -98,7 +100,7 @@ export async function analyzeOrderDescription(
       responseText = response.text;
     } catch (error: unknown) {
       logGeminiFailure(error);
-      throw new AIServiceError("AI_UNAVAILABLE");
+      throw new AIServiceError("AI_UNAVAILABLE", usage);
     }
 
     const analysis = parseOrderAnalysisResponse(responseText);
@@ -108,5 +110,5 @@ export async function analyzeOrderDescription(
     }
   }
 
-  throw new AIServiceError("AI_INVALID_RESPONSE");
+  throw new AIServiceError("AI_INVALID_RESPONSE", usage);
 }

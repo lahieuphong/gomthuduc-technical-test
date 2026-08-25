@@ -36,9 +36,9 @@ export function DialogShell({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex bg-stone-950/45 p-0 backdrop-blur-[2px] ${
+      className={`fixed inset-0 z-50 flex bg-[#1c1917]/55 p-0 backdrop-blur-[3px] ${
         variant === "modal"
-          ? "items-end justify-center sm:items-center sm:p-5"
+          ? "items-end justify-center sm:items-center sm:p-6"
           : "justify-end"
       }`}
       onMouseDown={(event) => {
@@ -52,8 +52,8 @@ export function DialogShell({
         aria-modal="true"
         className={
           variant === "modal"
-            ? "max-h-[94vh] w-full overflow-y-auto rounded-t-3xl border border-stone-200 bg-white shadow-2xl sm:max-w-4xl sm:rounded-3xl"
-            : "h-full w-full overflow-y-auto border-l border-stone-200 bg-[#fcfbf9] shadow-2xl sm:max-w-2xl"
+            ? "max-h-[96dvh] w-full overscroll-contain overflow-y-auto rounded-t-[22px] border border-[#e8ded5] bg-[#fffdf9] shadow-[0_-12px_50px_rgba(28,25,23,0.2)] sm:max-h-[90dvh] sm:max-w-3xl sm:rounded-[22px] sm:shadow-[0_24px_80px_rgba(28,25,23,0.24)]"
+            : "h-full w-full overscroll-contain overflow-y-auto border-l border-[#e4d9d0] bg-[#f8f4ee] shadow-[-16px_0_60px_rgba(28,25,23,0.2)] sm:max-w-2xl"
         }
         role="dialog"
       >
