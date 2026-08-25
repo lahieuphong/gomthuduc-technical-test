@@ -1,5 +1,6 @@
 "use client";
 
+import { ExternalLink, Sparkles, X } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
 import { Priority } from "@/generated/prisma/enums";
@@ -81,7 +82,7 @@ function TokenUsage({ usage }: { usage: AIUsage }) {
             {usage.requestCount > 1 ? " (gồm lần thử lại)" : ""}
           </p>
         </div>
-        <span className="w-fit rounded-full border border-[#d9e2e4] bg-white px-2.5 py-1 font-mono text-[10px] font-bold text-[#38606a]">
+        <span className="w-fit rounded-full border border-[#d9e2e4] bg-white px-2.5 py-1 text-[10px] font-bold text-[#38606a]">
           {usage.model}
         </span>
       </div>
@@ -100,39 +101,42 @@ function TokenUsage({ usage }: { usage: AIUsage }) {
       </dl>
 
       <p className="mt-2.5 text-[11px] leading-4 text-[#48646b]">
-        Số liệu thực do Gemini trả về. Tổng token đã gồm input, output và token
-        suy luận.
+        Số liệu thực do Gemini trả về. Tổng số token đã bao gồm dữ liệu đầu vào,
+        dữ liệu đầu ra và token suy luận.
       </p>
 
       {usage.cachedContentTokenCount > 0 && (
         <p className="mt-1 text-[11px] text-[#48646b]">
-          Trong input có {usage.cachedContentTokenCount.toLocaleString("vi-VN")}
-          {" "}token từ cache.
+          Trong dữ liệu đầu vào có{" "}
+          {usage.cachedContentTokenCount.toLocaleString("vi-VN")} token được tái
+          sử dụng từ bộ nhớ đệm.
         </p>
       )}
 
       <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1">
         <a
-          className="text-[11px] font-bold text-[#38606a] underline decoration-[#9ab0b5] underline-offset-4 hover:text-[#243f46] focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#38606a]"
+          className="inline-flex items-center gap-1 text-[11px] font-bold text-[#38606a] underline decoration-[#9ab0b5] underline-offset-4 hover:text-[#243f46] focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#38606a]"
           href="https://aistudio.google.com/usage"
           rel="noreferrer"
           target="_blank"
         >
-          Xem mức sử dụng ↗
+          Xem mức sử dụng
+          <ExternalLink aria-hidden="true" className="h-3 w-3" />
         </a>
         <a
-          className="text-[11px] font-bold text-[#38606a] underline decoration-[#9ab0b5] underline-offset-4 hover:text-[#243f46] focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#38606a]"
+          className="inline-flex items-center gap-1 text-[11px] font-bold text-[#38606a] underline decoration-[#9ab0b5] underline-offset-4 hover:text-[#243f46] focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#38606a]"
           href="https://aistudio.google.com/rate-limit?timeRange=last-28-days"
           rel="noreferrer"
           target="_blank"
         >
-          Xem quota &amp; giới hạn ↗
+          Xem hạn mức và giới hạn
+          <ExternalLink aria-hidden="true" className="h-3 w-3" />
         </a>
       </div>
 
       <p className="mt-2 text-[10px] leading-4 text-stone-500">
-        Gemini không trả quota miễn phí còn lại trong từng response; AI Studio
-        là nguồn chính xác theo project của bạn.
+        Gemini không trả về hạn mức miễn phí còn lại trong từng phản hồi; Google
+        AI Studio là nguồn theo dõi chính xác theo dự án.
       </p>
     </section>
   );
@@ -178,7 +182,7 @@ function AnalysisPreview({
         />
         <PreviewItem label="Kích thước" value={formatDimensions(analysis)} />
         <PreviewItem label="Họa tiết" value={analysis.pattern ?? "Không có"} />
-        <PreviewItem label="Men" value={analysis.glazeType} />
+        <PreviewItem label="Loại men" value={analysis.glazeType} />
         <PreviewItem
           label="Nhiệt độ nung"
           value={`${analysis.firingTemperatureC}°C`}
@@ -195,7 +199,10 @@ function AnalysisPreview({
           label="Thời gian nung"
           value={`${analysis.estimatedFiringHours} giờ`}
         />
-        <PreviewItem label="Deadline" value={`${analysis.deadlineDays} ngày`} />
+        <PreviewItem
+          label="Hạn hoàn thành"
+          value={`${analysis.deadlineDays} ngày`}
+        />
         <PreviewItem
           label="Độ ưu tiên"
           value={PRIORITY_LABELS[analysis.priority]}
@@ -347,12 +354,12 @@ export function CreateBatchModal({
           </ol>
           <button
             aria-label="Đóng"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#e4d9d0] bg-white text-xl leading-none text-stone-500 transition hover:border-[#c9b6a8] hover:bg-[#f8f3ed] hover:text-stone-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9f4b2e] disabled:opacity-40"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#e4d9d0] bg-white text-stone-500 transition hover:border-[#c9b6a8] hover:bg-[#f8f3ed] hover:text-stone-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9f4b2e] disabled:opacity-40"
             disabled={isBusy}
             onClick={handleClose}
             type="button"
           >
-            ×
+            <X aria-hidden="true" className="h-4 w-4" />
           </button>
         </div>
       </div>
@@ -410,15 +417,16 @@ export function CreateBatchModal({
           )}
 
           <button
-            className="mt-3 inline-flex min-h-10 w-full items-center justify-center rounded-xl bg-[#1c1917] px-4 py-2.5 text-sm font-bold text-white shadow-[0_5px_14px_rgba(28,25,23,0.16)] transition hover:bg-[#302b27] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9f4b2e] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+            className="mt-3 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl bg-[#1c1917] px-4 py-2.5 text-sm font-bold text-white shadow-[0_5px_14px_rgba(28,25,23,0.16)] transition hover:bg-[#302b27] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9f4b2e] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
             disabled={isBusy || description.trim().length < 10}
             type="submit"
           >
+            <Sparkles aria-hidden="true" className="h-4 w-4" />
             {isAnalyzing
               ? "Đang phân tích đơn hàng..."
               : analysis
-                ? "✨ Phân tích lại"
-                : "✨ Phân tích bằng AI"}
+                ? "Phân tích lại"
+                : "Phân tích bằng AI"}
           </button>
         </form>
 

@@ -17,7 +17,7 @@ type RecordTelegramNotificationInput = {
 
 const CONTEXT_LABELS: Record<TelegramNotificationContext, string> = {
   stage_transition: "cập nhật công đoạn",
-  qc_report: "kết quả QC",
+  qc_report: "kết quả kiểm định",
 };
 
 export async function recordTelegramNotification(

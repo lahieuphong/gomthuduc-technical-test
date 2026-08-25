@@ -74,7 +74,7 @@ export function KanbanBoard({ batches, onSelectBatch }: KanbanBoardProps) {
             />
             <header className="flex min-h-10 items-center justify-between gap-2 px-0.5 pt-1">
               <div className="flex min-w-0 items-center gap-2">
-                <span className="font-mono text-[10px] font-bold tabular-nums text-stone-400">
+                <span className="text-[10px] font-bold tabular-nums text-stone-400">
                   {String(stageIndex + 1).padStart(2, "0")}
                 </span>
                 <span

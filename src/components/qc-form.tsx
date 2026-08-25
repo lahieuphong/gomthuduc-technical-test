@@ -1,5 +1,6 @@
 "use client";
 
+import { CircleCheck } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
 import type { QcReportInput } from "@/types/api";
@@ -64,8 +65,8 @@ export function QcForm({
     >
       <div className="flex items-start justify-between gap-3 border-b border-[#eee5de] pb-3.5">
         <div className="flex items-center gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#efe2d8] text-xs font-black text-[#8d4128]">
-            QC
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#efe2d8] text-[#8d4128]">
+            <CircleCheck aria-hidden="true" className="h-4 w-4" />
           </span>
           <div>
             <p className="text-[10px] font-bold tracking-[0.14em] text-[#9f4b2e] uppercase">
@@ -148,7 +149,7 @@ export function QcForm({
         disabled={isSubmitting}
         type="submit"
       >
-        {isSubmitting ? "Đang gửi kết quả..." : "Gửi kết quả QC"}
+        {isSubmitting ? "Đang gửi kết quả..." : "Gửi kết quả kiểm định"}
       </button>
     </form>
   );

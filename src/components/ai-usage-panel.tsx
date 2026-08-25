@@ -1,3 +1,5 @@
+import { ExternalLink } from "lucide-react";
+
 import type { AIUsageSummary } from "@/types/api";
 
 type AIUsagePanelProps = {
@@ -36,7 +38,7 @@ export function AIUsagePanel({ usage }: AIUsagePanelProps) {
       ? "Chưa có dữ liệu"
       : usage.models.length === 1
         ? usage.models[0].model
-        : `${usage.models.length} model`;
+        : `${usage.models.length} mô hình`;
   const modelNames = usage?.models.map((model) => model.model).join(", ");
 
   return (
@@ -55,7 +57,7 @@ export function AIUsagePanel({ usage }: AIUsagePanelProps) {
               Theo dõi Gemini
             </p>
             <span
-              className="max-w-36 truncate rounded-full bg-sky-50 px-2 py-0.5 font-mono text-[9px] font-bold text-sky-800"
+              className="max-w-36 truncate rounded-full bg-sky-50 px-2 py-0.5 text-[9px] font-bold text-sky-800"
               title={modelNames}
             >
               {modelLabel}
@@ -95,20 +97,22 @@ export function AIUsagePanel({ usage }: AIUsagePanelProps) {
 
         <div className="flex items-center gap-2">
           <a
-            className="inline-flex min-h-9 items-center justify-center rounded-lg border border-stone-200 bg-white px-3 text-[10px] font-bold text-stone-700 transition hover:border-sky-300 hover:text-sky-800"
+            className="inline-flex min-h-9 items-center justify-center gap-1 rounded-lg border border-stone-200 bg-white px-3 text-[10px] font-bold text-stone-700 transition hover:border-sky-300 hover:text-sky-800"
             href="https://aistudio.google.com/usage"
             rel="noreferrer"
             target="_blank"
           >
-            AI Studio ↗
+            AI Studio
+            <ExternalLink aria-hidden="true" className="h-3 w-3" />
           </a>
           <a
-            className="inline-flex min-h-9 items-center justify-center rounded-lg border border-stone-200 bg-white px-3 text-[10px] font-bold text-stone-700 transition hover:border-sky-300 hover:text-sky-800"
+            className="inline-flex min-h-9 items-center justify-center gap-1 rounded-lg border border-stone-200 bg-white px-3 text-[10px] font-bold text-stone-700 transition hover:border-sky-300 hover:text-sky-800"
             href="https://aistudio.google.com/rate-limit?timeRange=last-28-days"
             rel="noreferrer"
             target="_blank"
           >
-            Quota ↗
+            Hạn mức
+            <ExternalLink aria-hidden="true" className="h-3 w-3" />
           </a>
         </div>
       </div>

@@ -74,7 +74,7 @@ export async function submitQcReport(id: string, input: QcReportRequest) {
         eventType: EventType.QC_REPORTED,
         fromStage: Stage.QC,
         toStage: Stage.QC,
-        message: `Đã ghi nhận QC cho mẻ ${currentBatch.code}: kiểm tra ${input.inspectedQuantity}, đạt ${passedQuantity}, lỗi ${input.defectQuantity}.`,
+        message: `Đã ghi nhận kết quả kiểm định cho mẻ ${currentBatch.code}: kiểm tra ${input.inspectedQuantity}, đạt ${passedQuantity}, lỗi ${input.defectQuantity}.`,
         metadata: {
           qcReportId: qcReport.id,
           defectRate,

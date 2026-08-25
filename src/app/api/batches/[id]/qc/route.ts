@@ -13,7 +13,7 @@ type QcRouteContext = {
 
 const TELEGRAM_WARNING = {
   code: "TELEGRAM_FAILED" as const,
-  message: "Báo cáo QC đã được lưu nhưng gửi Telegram thất bại.",
+  message: "Báo cáo kiểm định đã được lưu nhưng gửi Telegram thất bại.",
 };
 
 function handleQcError(error: QcSubmissionError) {
@@ -27,7 +27,7 @@ function handleQcError(error: QcSubmissionError) {
     case "QC_STAGE_CONFLICT":
       return errorResponse(
         "QC_STAGE_CONFLICT",
-        "Chỉ có thể gửi báo cáo khi mẻ đang ở công đoạn QC.",
+        "Chỉ có thể gửi báo cáo khi mẻ đang ở công đoạn Kiểm định chất lượng.",
         409,
       );
     case "QC_QUANTITY_EXCEEDED":
@@ -60,7 +60,7 @@ export async function POST(request: Request, context: QcRouteContext) {
   } catch {
     return errorResponse(
       "INVALID_JSON",
-      "Nội dung request phải là JSON hợp lệ.",
+      "Nội dung yêu cầu phải là JSON hợp lệ.",
       400,
     );
   }
@@ -70,7 +70,7 @@ export async function POST(request: Request, context: QcRouteContext) {
   if (!validationResult.success) {
     return errorResponse(
       "INVALID_INPUT",
-      "Dữ liệu báo cáo QC không hợp lệ.",
+      "Dữ liệu báo cáo kiểm định không hợp lệ.",
       400,
     );
   }
@@ -89,7 +89,11 @@ export async function POST(request: Request, context: QcRouteContext) {
 
     logUnexpectedError("Unexpected QC report API error.", error);
 
-    return errorResponse("INTERNAL_ERROR", "Không thể lưu báo cáo QC.", 500);
+    return errorResponse(
+      "INTERNAL_ERROR",
+      "Không thể lưu báo cáo kiểm định.",
+      500,
+    );
   }
 
   const notificationInput = {

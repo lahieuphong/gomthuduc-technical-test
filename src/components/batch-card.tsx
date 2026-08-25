@@ -1,3 +1,5 @@
+import { ArrowRight } from "lucide-react";
+
 import { Priority } from "@/generated/prisma/enums";
 import { getStageLabel } from "@/lib/workflow";
 import type { BatchRecord } from "@/types/api";
@@ -37,7 +39,7 @@ export function BatchCard({ batch, onClick }: BatchCardProps) {
       type="button"
     >
       <div className="flex items-center justify-between gap-2">
-        <span className="min-w-0 truncate font-mono text-[10px] font-bold tracking-[0.04em] text-stone-500">
+        <span className="min-w-0 truncate text-[10px] font-bold tracking-[0.04em] text-stone-500">
           {batch.code}
         </span>
         <span
@@ -61,12 +63,12 @@ export function BatchCard({ batch, onClick }: BatchCardProps) {
             Số lượng
           </dt>
           <dd className="mt-0.5 truncate text-xs font-bold text-stone-800">
-            {batch.quantity.toLocaleString("vi-VN")} sp
+            {batch.quantity.toLocaleString("vi-VN")} sản phẩm
           </dd>
         </div>
         <div className="pl-3">
           <dt className="text-[9px] font-bold tracking-[0.08em] text-stone-400 uppercase">
-            Deadline
+            Hạn hoàn thành
           </dt>
           <dd className="mt-0.5 text-xs font-bold text-stone-800">
             {batch.deadlineDays} ngày
@@ -83,12 +85,10 @@ export function BatchCard({ batch, onClick }: BatchCardProps) {
             {batch.firingTemperatureC}°C
           </span>
         )}
-        <span
+        <ArrowRight
           aria-hidden="true"
-          className="ml-auto shrink-0 text-sm text-stone-300 transition group-hover:translate-x-0.5 group-hover:text-[#9f4b2e]"
-        >
-          →
-        </span>
+          className="ml-auto h-3.5 w-3.5 shrink-0 text-stone-300 transition group-hover:translate-x-0.5 group-hover:text-[#9f4b2e]"
+        />
       </div>
     </button>
   );

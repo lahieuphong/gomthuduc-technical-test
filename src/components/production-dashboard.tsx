@@ -1,5 +1,14 @@
 "use client";
 
+import {
+  ArrowRight,
+  CircleAlert,
+  CircleCheck,
+  Plus,
+  TriangleAlert,
+  X,
+} from "lucide-react";
+import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { Stage } from "@/generated/prisma/enums";
@@ -26,30 +35,11 @@ const TOAST_STYLES: Record<ToastKind, string> = {
   error: "border-red-700 bg-red-950 text-red-50",
 };
 
-function BrandMark() {
-  return (
-    <svg
-      aria-hidden="true"
-      className="h-6 w-6"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <path
-        d="M8 3.75h8M9 6.5h6c0 2.1.8 3.1 2.3 4.55 1.35 1.3 2.2 3.03 2.2 4.95 0 2.75-2.2 4.25-7.5 4.25S4.5 18.75 4.5 16c0-1.92.85-3.65 2.2-4.95C8.2 9.6 9 8.6 9 6.5Z"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M6.25 15.5c2.75 1.15 8.75 1.15 11.5 0"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeWidth="1.5"
-      />
-    </svg>
-  );
-}
+const TOAST_ICONS = {
+  success: CircleCheck,
+  warning: TriangleAlert,
+  error: CircleAlert,
+} as const satisfies Record<ToastKind, typeof CircleCheck>;
 
 export function ProductionDashboard() {
   const latestRequestIdRef = useRef(0);
@@ -167,7 +157,7 @@ export function ProductionDashboard() {
         caption: "Trong lò",
       },
       {
-        label: "Đang QC",
+        label: "Đang kiểm định",
         value: batches.filter((batch) => batch.currentStage === Stage.QC)
           .length,
         accent: "bg-violet-600",
@@ -193,26 +183,33 @@ export function ProductionDashboard() {
     },
     [loadBatches, showToast],
   );
+  const ToastIcon = toast ? TOAST_ICONS[toast.kind] : null;
 
   return (
     <main className="min-h-screen text-stone-900">
       <header className="border-b border-[#ded8cf] bg-[#fffdf9]/95 backdrop-blur">
         <div className="mx-auto flex max-w-[1920px] items-center justify-between gap-4 px-4 py-3.5 sm:px-6 lg:px-8">
           <div className="flex min-w-0 items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[13px] bg-stone-900 text-[#f6d8c8] shadow-[0_4px_12px_rgb(28_25_23/14%)]">
-              <BrandMark />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-[13px] bg-stone-950 shadow-[0_4px_12px_rgb(28_25_23/16%)] ring-1 ring-[#b7791f]/20">
+              <Image
+                alt=""
+                className="h-[34px] w-[34px] object-contain"
+                height={34}
+                src="/gom-thu-duc-logo-gold.png"
+                width={34}
+              />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <p className="hidden text-[10px] font-bold tracking-[0.18em] text-[#9f4b2e] uppercase sm:block">
-                  Ceramics Manufacturing
+                  Sản xuất gốm
                 </p>
                 <span className="hidden h-1 w-1 rounded-full bg-stone-300 sm:block" />
                 <p className="hidden text-[10px] font-semibold text-stone-400 sm:block">
-                  Production Control
+                  Điều phối sản xuất
                 </p>
               </div>
-              <h1 className="truncate font-display text-xl font-bold tracking-[-0.02em] text-stone-950 sm:text-[23px]">
+              <h1 className="truncate text-xl font-bold tracking-[-0.02em] text-stone-950 sm:text-[23px]">
                 Gốm Production Pipeline
               </h1>
               <p className="mt-0.5 hidden text-[11px] text-stone-500 sm:block">
@@ -237,9 +234,7 @@ export function ProductionDashboard() {
               }}
               type="button"
             >
-              <span aria-hidden="true" className="text-lg leading-none">
-                +
-              </span>
+              <Plus aria-hidden="true" className="h-4 w-4" />
               <span className="hidden sm:inline">Tạo mẻ sản xuất</span>
               <span className="sm:hidden">Tạo mẻ</span>
             </button>
@@ -308,7 +303,7 @@ export function ProductionDashboard() {
                 Luồng sản xuất
               </p>
               <h2
-                className="mt-0.5 font-display text-xl font-bold tracking-[-0.02em] text-stone-950"
+                className="mt-0.5 text-xl font-bold tracking-[-0.02em] text-stone-950"
                 id="kanban-title"
               >
                 Tiến độ theo công đoạn
@@ -316,9 +311,10 @@ export function ProductionDashboard() {
             </div>
             <div className="flex items-center gap-2 text-[10px] font-medium text-stone-500 2xl:hidden">
               <span aria-hidden="true">Kéo ngang để xem toàn bộ quy trình</span>
-              <span aria-hidden="true" className="text-[#9f4b2e]">
-                →
-              </span>
+              <ArrowRight
+                aria-hidden="true"
+                className="h-3.5 w-3.5 text-[#9f4b2e]"
+              />
             </div>
           </div>
 
@@ -349,7 +345,7 @@ export function ProductionDashboard() {
             </div>
           ) : loadError && batches.length === 0 ? (
             <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-center text-red-800">
-              <p className="font-bold">Không thể tải dashboard</p>
+              <p className="font-bold">Không thể tải bảng điều phối</p>
               <p className="mt-1 text-sm">{loadError}</p>
               <button
                 className="mt-4 rounded-xl bg-red-700 px-4 py-2 text-sm font-bold text-white"
@@ -398,21 +394,20 @@ export function ProductionDashboard() {
           role={toast.kind === "error" ? "alert" : "status"}
         >
           <div className="flex items-start gap-3">
-            <span aria-hidden="true">
-              {toast.kind === "success"
-                ? "✓"
-                : toast.kind === "warning"
-                  ? "⚠"
-                  : "!"}
-            </span>
+            {ToastIcon && (
+              <ToastIcon
+                aria-hidden="true"
+                className="mt-0.5 h-4 w-4 shrink-0"
+              />
+            )}
             <span>{toast.message}</span>
             <button
               aria-label="Đóng thông báo"
-              className="ml-auto text-lg leading-none opacity-60 hover:opacity-100"
+              className="ml-auto shrink-0 opacity-60 hover:opacity-100"
               onClick={() => setToast(null)}
               type="button"
             >
-              ×
+              <X aria-hidden="true" className="h-4 w-4" />
             </button>
           </div>
         </div>

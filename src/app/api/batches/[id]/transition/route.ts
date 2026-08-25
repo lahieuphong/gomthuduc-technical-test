@@ -66,7 +66,7 @@ export async function POST(request: Request, context: TransitionRouteContext) {
   } catch {
     return errorResponse(
       "INVALID_JSON",
-      "Nội dung request phải là JSON hợp lệ.",
+      "Nội dung yêu cầu phải là JSON hợp lệ.",
       400,
     );
   }
