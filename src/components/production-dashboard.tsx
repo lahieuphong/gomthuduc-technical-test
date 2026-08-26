@@ -187,13 +187,13 @@ export function ProductionDashboard() {
 
   return (
     <main className="min-h-screen text-stone-900">
-      <header className="border-b border-[#ded8cf] bg-[#fffdf9]/95 backdrop-blur">
-        <div className="mx-auto flex max-w-[1920px] items-center justify-between gap-4 px-4 py-3.5 sm:px-6 lg:px-8">
+      <header className="border-b border-line bg-surface/95 backdrop-blur">
+        <div className="mx-auto flex max-w-480 items-center justify-between gap-4 px-4 py-3.5 sm:px-6 lg:px-8">
           <div className="flex min-w-0 items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-[13px] bg-stone-950 shadow-[0_4px_12px_rgb(28_25_23/16%)] ring-1 ring-[#b7791f]/20">
               <Image
                 alt=""
-                className="h-[34px] w-[34px] object-contain"
+                className="size-8.5 object-contain"
                 height={34}
                 src="/gom-thu-duc-logo-gold.png"
                 width={34}
@@ -201,7 +201,7 @@ export function ProductionDashboard() {
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <p className="hidden text-[10px] font-bold tracking-[0.18em] text-[#9f4b2e] uppercase sm:block">
+                <p className="hidden text-[10px] font-bold tracking-[0.18em] text-accent uppercase sm:block">
                   Sản xuất gốm
                 </p>
                 <span className="hidden h-1 w-1 rounded-full bg-stone-300 sm:block" />
@@ -227,7 +227,7 @@ export function ProductionDashboard() {
               Hệ thống đang hoạt động
             </div>
             <button
-              className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-[#9f4b2e] px-3.5 py-2 text-xs font-bold text-white shadow-[0_5px_14px_rgb(159_75_46/20%)] transition hover:bg-[#843d26] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9f4b2e] sm:px-4 sm:text-sm"
+              className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-accent px-3.5 py-2 text-xs font-bold text-white shadow-[0_5px_14px_rgb(159_75_46/20%)] transition hover:bg-[#843d26] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:px-4 sm:text-sm"
               onClick={() => {
                 setSelectedBatchId(null);
                 setIsCreateOpen(true);
@@ -242,14 +242,14 @@ export function ProductionDashboard() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-[1920px] px-4 py-4 sm:px-6 lg:px-8 lg:py-5">
+      <div className="mx-auto max-w-480 px-4 py-4 sm:px-6 lg:px-8 lg:py-5">
         <section
           aria-label="Thống kê sản xuất"
           className="overflow-hidden rounded-[18px] border border-[#ddd7ce] bg-[#ddd7ce] shadow-[0_1px_2px_rgb(28_25_23/4%)]"
         >
-          <div className="flex flex-col gap-1 bg-[#fffdf9] px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-1 bg-surface px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-[10px] font-bold tracking-[0.14em] text-[#9f4b2e] uppercase">
+              <p className="text-[10px] font-bold tracking-[0.14em] text-accent uppercase">
                 Tổng quan hôm nay
               </p>
               <h2 className="mt-0.5 text-sm font-bold text-stone-900">
@@ -271,7 +271,7 @@ export function ProductionDashboard() {
           <div className="grid grid-cols-2 gap-px md:grid-cols-5">
             {statistics.map((statistic) => (
               <article
-                className="last:col-span-2 flex min-h-[72px] items-center justify-between gap-3 bg-[#fffdf9] px-4 py-3 md:last:col-span-1"
+                className="last:col-span-2 flex min-h-18 items-center justify-between gap-3 bg-surface px-4 py-3 md:last:col-span-1"
                 key={statistic.label}
               >
                 <div className="min-w-0">
@@ -299,7 +299,7 @@ export function ProductionDashboard() {
         <section className="mt-5" aria-labelledby="kanban-title">
           <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-[10px] font-bold tracking-[0.16em] text-[#9f4b2e] uppercase">
+              <p className="text-[10px] font-bold tracking-[0.16em] text-accent uppercase">
                 Luồng sản xuất
               </p>
               <h2
@@ -313,7 +313,7 @@ export function ProductionDashboard() {
               <span aria-hidden="true">Kéo ngang để xem toàn bộ quy trình</span>
               <ArrowRight
                 aria-hidden="true"
-                className="h-3.5 w-3.5 text-[#9f4b2e]"
+                className="h-3.5 w-3.5 text-accent"
               />
             </div>
           </div>
@@ -338,7 +338,7 @@ export function ProductionDashboard() {
             <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-8">
               {Array.from({ length: 4 }, (_, index) => (
                 <div
-                  className="h-48 animate-pulse rounded-[16px] bg-stone-200 motion-reduce:animate-none"
+                  className="h-48 animate-pulse rounded-2xl bg-stone-200 motion-reduce:animate-none"
                   key={index}
                 />
               ))}
@@ -389,7 +389,7 @@ export function ProductionDashboard() {
       {toast && (
         <div
           aria-live="polite"
-          className={`fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-[70] rounded-xl border px-4 py-3 text-sm font-semibold shadow-[0_14px_40px_rgb(28_25_23/22%)] sm:right-6 sm:left-auto sm:max-w-md ${TOAST_STYLES[toast.kind]}`}
+          className={`fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-70 rounded-xl border px-4 py-3 text-sm font-semibold shadow-[0_14px_40px_rgb(28_25_23/22%)] sm:right-6 sm:left-auto sm:max-w-md ${TOAST_STYLES[toast.kind]}`}
           key={toast.id}
           role={toast.kind === "error" ? "alert" : "status"}
         >

@@ -70,7 +70,7 @@ function TokenUsage({ usage }: { usage: AIUsage }) {
   ];
 
   return (
-    <section className="mt-3 rounded-[16px] border border-[#dfe6e8] bg-[#f5f8f8] px-4 py-3.5">
+    <section className="mt-3 rounded-2xl border border-[#dfe6e8] bg-[#f5f8f8] px-4 py-3.5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <p className="text-[10px] font-bold tracking-[0.14em] text-[#38606a] uppercase">
@@ -121,7 +121,7 @@ function TokenUsage({ usage }: { usage: AIUsage }) {
           target="_blank"
         >
           Xem mức sử dụng
-          <ExternalLink aria-hidden="true" className="h-3 w-3" />
+          <ExternalLink aria-hidden="true" className="size-3" />
         </a>
         <a
           className="inline-flex items-center gap-1 text-[11px] font-bold text-[#38606a] underline decoration-[#9ab0b5] underline-offset-4 hover:text-[#243f46] focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#38606a]"
@@ -130,7 +130,7 @@ function TokenUsage({ usage }: { usage: AIUsage }) {
           target="_blank"
         >
           Xem hạn mức và giới hạn
-          <ExternalLink aria-hidden="true" className="h-3 w-3" />
+          <ExternalLink aria-hidden="true" className="size-3" />
         </a>
       </div>
 
@@ -153,14 +153,14 @@ function AnalysisPreview({
     <section className="mt-4 rounded-[18px] border border-[#e8ded5] bg-white p-4 shadow-[0_8px_28px_rgba(61,43,32,0.05)] sm:p-5">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#9f4b2e] text-xs font-bold text-white">
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-bold text-white">
             02
           </span>
           <div>
-            <p className="text-[10px] font-bold tracking-[0.14em] text-[#9f4b2e] uppercase">
+            <p className="text-[10px] font-bold tracking-[0.14em] text-accent uppercase">
               Bước 2 · Xác nhận
             </p>
-            <h3 className="mt-0.5 text-base font-bold text-[#1c1917]">
+            <h3 className="mt-0.5 text-base font-bold text-foreground">
               Kiểm tra kết quả AI
             </h3>
           </div>
@@ -215,14 +215,14 @@ function AnalysisPreview({
       </dl>
 
       <div className="mt-3 rounded-[14px] border border-[#eadfce] bg-[#fcf8ef] px-3.5 py-3">
-        <p className="text-[10px] font-bold tracking-[0.1em] text-[#80552b] uppercase">
+        <p className="text-[10px] font-bold tracking-widest text-[#80552b] uppercase">
           Các giả định của AI
         </p>
         {analysis.assumptions.length > 0 ? (
           <ul className="mt-2 space-y-1 text-xs leading-5 text-[#594638]">
             {analysis.assumptions.map((assumption, index) => (
               <li className="flex gap-2" key={`${assumption}-${index}`}>
-                <span className="text-[#9f4b2e]" aria-hidden="true">
+                <span className="text-accent" aria-hidden="true">
                   •
                 </span>
                 <span>{assumption}</span>
@@ -326,13 +326,13 @@ export function CreateBatchModal({
       onClose={handleClose}
       variant="modal"
     >
-      <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#e8ded5] bg-[#fffdf9]/95 px-4 py-3.5 backdrop-blur sm:px-6">
+      <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#e8ded5] bg-surface/95 px-4 py-3.5 backdrop-blur sm:px-6">
         <div className="min-w-0">
-          <p className="text-[10px] font-bold tracking-[0.16em] text-[#9f4b2e] uppercase">
+          <p className="text-[10px] font-bold tracking-[0.16em] text-accent uppercase">
             Mẻ sản xuất mới · AI hỗ trợ
           </p>
           <h2
-            className="mt-0.5 truncate text-lg font-bold tracking-tight text-[#1c1917] sm:text-xl"
+            className="mt-0.5 truncate text-lg font-bold tracking-tight text-foreground sm:text-xl"
             id="create-batch-title"
           >
             Tạo mẻ sản xuất
@@ -343,23 +343,23 @@ export function CreateBatchModal({
             aria-label="Tiến trình tạo mẻ"
             className="hidden items-center gap-1.5 text-[10px] font-bold text-stone-400 sm:flex"
           >
-            <li className="flex items-center gap-1.5 text-[#9f4b2e]">
+            <li className="flex items-center gap-1.5 text-accent">
               <span className="h-1.5 w-1.5 rounded-full bg-current" />
               Mô tả
             </li>
             <li aria-hidden="true" className="h-px w-5 bg-stone-300" />
-            <li className={analysis ? "text-[#9f4b2e]" : "text-stone-400"}>
+            <li className={analysis ? "text-accent" : "text-stone-400"}>
               Xác nhận
             </li>
           </ol>
           <button
             aria-label="Đóng"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#e4d9d0] bg-white text-stone-500 transition hover:border-[#c9b6a8] hover:bg-[#f8f3ed] hover:text-stone-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9f4b2e] disabled:opacity-40"
+            className="flex size-9 shrink-0 items-center justify-center rounded-full border border-[#e4d9d0] bg-white text-stone-500 transition hover:border-[#c9b6a8] hover:bg-[#f8f3ed] hover:text-stone-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-40"
             disabled={isBusy}
             onClick={handleClose}
             type="button"
           >
-            <X aria-hidden="true" className="h-4 w-4" />
+            <X aria-hidden="true" className="size-4" />
           </button>
         </div>
       </div>
@@ -371,15 +371,15 @@ export function CreateBatchModal({
         >
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#efe2d8] text-xs font-bold text-[#8d4128]">
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#efe2d8] text-xs font-bold text-[#8d4128]">
                 01
               </span>
               <div>
-                <p className="text-[10px] font-bold tracking-[0.14em] text-[#9f4b2e] uppercase">
+                <p className="text-[10px] font-bold tracking-[0.14em] text-accent uppercase">
                   Bước 1 · Nhập yêu cầu
                 </p>
                 <label
-                  className="mt-0.5 block text-base font-bold text-[#1c1917]"
+                  className="mt-0.5 block text-base font-bold text-foreground"
                   htmlFor="order-description"
                 >
                   Mô tả đơn hàng
@@ -392,7 +392,7 @@ export function CreateBatchModal({
           </div>
 
           <textarea
-            className="mt-3 min-h-28 w-full resize-y rounded-[14px] border border-[#dcd2ca] bg-[#fffdfa] px-3.5 py-3 text-sm leading-6 text-[#29231f] outline-none transition placeholder:text-stone-400 focus:border-[#9f4b2e] focus:ring-3 focus:ring-[#ecd8ce] disabled:bg-stone-50"
+            className="mt-3 min-h-28 w-full resize-y rounded-[14px] border border-[#dcd2ca] bg-[#fffdfa] px-3.5 py-3 text-sm leading-6 text-[#29231f] outline-none transition placeholder:text-stone-400 focus:border-accent focus:ring-3 focus:ring-[#ecd8ce] disabled:bg-stone-50"
             disabled={isBusy}
             id="order-description"
             maxLength={2000}
@@ -417,11 +417,11 @@ export function CreateBatchModal({
           )}
 
           <button
-            className="mt-3 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl bg-[#1c1917] px-4 py-2.5 text-sm font-bold text-white shadow-[0_5px_14px_rgba(28,25,23,0.16)] transition hover:bg-[#302b27] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9f4b2e] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+            className="mt-3 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl bg-foreground px-4 py-2.5 text-sm font-bold text-white shadow-[0_5px_14px_rgba(28,25,23,0.16)] transition hover:bg-[#302b27] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
             disabled={isBusy || description.trim().length < 10}
             type="submit"
           >
-            <Sparkles aria-hidden="true" className="h-4 w-4" />
+            <Sparkles aria-hidden="true" className="size-4" />
             {isAnalyzing
               ? "Đang phân tích đơn hàng..."
               : analysis
@@ -436,9 +436,9 @@ export function CreateBatchModal({
       </div>
 
       {analysis && (
-        <footer className="sticky bottom-0 flex flex-col-reverse gap-2 border-t border-[#e8ded5] bg-[#fffdf9]/95 px-4 py-3 backdrop-blur sm:flex-row sm:justify-end sm:px-6">
+        <footer className="sticky bottom-0 flex flex-col-reverse gap-2 border-t border-[#e8ded5] bg-surface/95 px-4 py-3 backdrop-blur sm:flex-row sm:justify-end sm:px-6">
           <button
-            className="min-h-10 rounded-xl border border-[#dcd2ca] bg-white px-4 py-2 text-sm font-bold text-stone-700 transition hover:bg-[#f8f3ed] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9f4b2e] disabled:opacity-50"
+            className="min-h-10 rounded-xl border border-[#dcd2ca] bg-white px-4 py-2 text-sm font-bold text-stone-700 transition hover:bg-[#f8f3ed] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-50"
             disabled={isBusy}
             onClick={handleClose}
             type="button"
@@ -446,7 +446,7 @@ export function CreateBatchModal({
             Hủy
           </button>
           <button
-            className="min-h-10 rounded-xl bg-[#9f4b2e] px-5 py-2 text-sm font-bold text-white shadow-[0_5px_14px_rgba(120,50,29,0.2)] transition hover:bg-[#873d26] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9f4b2e] disabled:cursor-not-allowed disabled:opacity-50"
+            className="min-h-10 rounded-xl bg-accent px-5 py-2 text-sm font-bold text-white shadow-[0_5px_14px_rgba(120,50,29,0.2)] transition hover:bg-[#873d26] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50"
             disabled={isBusy}
             onClick={handleCreate}
             type="button"

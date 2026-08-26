@@ -65,7 +65,7 @@ export function KanbanBoard({ batches, onSelectBatch }: KanbanBoardProps) {
 
         return (
           <section
-            className="relative min-w-0 snap-start overflow-hidden rounded-[16px] border border-[#ddd7ce] bg-[#eae6df]/65 p-2.5"
+            className="relative min-w-0 snap-start overflow-hidden rounded-2xl border border-[#ddd7ce] bg-[#eae6df]/65 p-2.5"
             key={stage}
           >
             <span
@@ -81,7 +81,7 @@ export function KanbanBoard({ batches, onSelectBatch }: KanbanBoardProps) {
                   aria-hidden="true"
                   className={`h-2 w-2 shrink-0 rounded-full ${accent.dot}`}
                 />
-                <h2 className="truncate text-[12px] font-bold leading-4 text-stone-800">
+                <h2 className="truncate text-xs font-bold leading-4 text-stone-800">
                   {getStageLabel(stage)}
                 </h2>
               </div>

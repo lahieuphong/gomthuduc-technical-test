@@ -320,11 +320,11 @@ export function BatchDetailDrawer({
     >
       <header className="sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-stone-200/80 bg-[#fffdfa]/95 px-5 py-3.5 backdrop-blur-xl sm:px-6">
         <div className="min-w-0">
-          <p className="text-[10px] font-semibold tracking-[0.18em] text-[#9f4b2e] uppercase">
+          <p className="text-[10px] font-semibold tracking-[0.18em] text-accent uppercase">
             Hồ sơ sản xuất
           </p>
           <h2
-            className="mt-0.5 truncate text-lg font-bold tracking-tight text-[#1c1917]"
+            className="mt-0.5 truncate text-lg font-bold tracking-tight text-foreground"
             id="batch-detail-title"
           >
             {details?.batch.code ?? "Đang tải..."}
@@ -337,11 +337,11 @@ export function BatchDetailDrawer({
         </div>
         <button
           aria-label="Đóng chi tiết"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-stone-200 bg-white text-stone-500 shadow-sm transition hover:border-stone-300 hover:bg-stone-50 hover:text-stone-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9f4b2e]"
+          className="flex size-9 shrink-0 items-center justify-center rounded-full border border-stone-200 bg-white text-stone-500 shadow-sm transition hover:border-stone-300 hover:bg-stone-50 hover:text-stone-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           onClick={onClose}
           type="button"
         >
-          <X aria-hidden="true" className="h-4 w-4" />
+          <X aria-hidden="true" className="size-4" />
         </button>
       </header>
 
@@ -382,11 +382,11 @@ export function BatchDetailDrawer({
               <div className="p-4 sm:p-5">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <p className="text-[10px] font-semibold tracking-[0.16em] text-[#9f4b2e] uppercase">
+                    <p className="text-[10px] font-semibold tracking-[0.16em] text-accent uppercase">
                       Công đoạn hiện tại · Bước {currentStageIndex + 1}/
                       {WORKFLOW_STAGES.length}
                     </p>
-                    <h3 className="mt-1 text-xl font-bold tracking-tight text-[#1c1917] sm:text-2xl">
+                    <h3 className="mt-1 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
                       {getStageLabel(details.batch.currentStage)}
                     </h3>
                   </div>
@@ -426,7 +426,7 @@ export function BatchDetailDrawer({
                     role="progressbar"
                   >
                     <div
-                      className="h-full rounded-full bg-[#9f4b2e] transition-[width] duration-300"
+                      className="h-full rounded-full bg-accent transition-[width] duration-300"
                       style={{
                         width: `${((currentStageIndex + 1) / WORKFLOW_STAGES.length) * 100}%`,
                       }}
@@ -440,7 +440,7 @@ export function BatchDetailDrawer({
                       <span
                         className={`h-1 rounded-full ${
                           index <= currentStageIndex
-                            ? "bg-[#9f4b2e]/65"
+                            ? "bg-accent/65"
                             : "bg-stone-200"
                         }`}
                         key={stage}
@@ -449,7 +449,7 @@ export function BatchDetailDrawer({
                   </div>
                 </div>
 
-                <p className="mt-4 border-l-2 border-[#9f4b2e]/35 pl-3 text-xs leading-5 text-stone-500">
+                <p className="mt-4 border-l-2 border-accent/35 pl-3 text-xs leading-5 text-stone-500">
                   {details.batch.priorityReason ?? "Không có ghi chú ưu tiên."}
                 </p>
               </div>
@@ -464,15 +464,15 @@ export function BatchDetailDrawer({
                         {getStageLabel(details.batch.currentStage)}
                         <ArrowRight
                           aria-hidden="true"
-                          className="mx-2 inline h-3.5 w-3.5 text-stone-300"
+                          className="mx-2 inline size-3.5 text-stone-300"
                         />
-                        <span className="text-[#9f4b2e]">
+                        <span className="text-accent">
                           {getStageLabel(nextStage)}
                         </span>
                       </p>
                     </div>
                     <button
-                      className="min-h-11 shrink-0 rounded-xl bg-[#9f4b2e] px-4 py-2.5 text-sm font-bold text-white shadow-[0_5px_16px_rgba(159,75,46,0.22)] transition hover:bg-[#873d25] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9f4b2e] disabled:cursor-not-allowed disabled:opacity-50"
+                      className="min-h-11 shrink-0 rounded-xl bg-accent px-4 py-2.5 text-sm font-bold text-white shadow-[0_5px_16px_rgba(159,75,46,0.22)] transition hover:bg-[#873d25] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50"
                       disabled={action !== null || !canCompleteQc}
                       onClick={handleTransition}
                       type="button"
@@ -484,10 +484,10 @@ export function BatchDetailDrawer({
                   </div>
                 ) : (
                   <div className="flex items-center gap-3 text-sm font-semibold text-emerald-800">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-100">
+                    <span className="flex size-7 items-center justify-center rounded-full bg-emerald-100">
                       <CircleCheck
                         aria-hidden="true"
-                        className="h-4 w-4"
+                        className="size-4"
                       />
                     </span>
                     Quy trình sản xuất đã hoàn thành.
@@ -523,10 +523,10 @@ export function BatchDetailDrawer({
             <section className="rounded-[18px] border border-stone-200/90 bg-white p-4 shadow-[0_5px_20px_rgba(41,37,36,0.035)] sm:p-5">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-[10px] font-semibold tracking-[0.16em] text-[#9f4b2e] uppercase">
+                  <p className="text-[10px] font-semibold tracking-[0.16em] text-accent uppercase">
                     Thông tin mẻ
                   </p>
-                  <h3 className="mt-1 text-base font-bold text-[#1c1917]">
+                  <h3 className="mt-1 text-base font-bold text-foreground">
                     Thông số sản xuất
                   </h3>
                 </div>
@@ -599,7 +599,7 @@ export function BatchDetailDrawer({
                     <span>Giả định của AI ({assumptions.length})</span>
                     <ChevronDown
                       aria-hidden="true"
-                      className="h-4 w-4 shrink-0 text-amber-700 transition group-open:rotate-180"
+                      className="size-4 shrink-0 text-amber-700 transition group-open:rotate-180"
                     />
                   </summary>
                   <ul className="space-y-1.5 border-t border-amber-200/60 px-3 py-3 text-xs leading-5 text-amber-950">
@@ -623,7 +623,7 @@ export function BatchDetailDrawer({
                     <p className="text-[10px] font-semibold tracking-[0.16em] text-violet-700 uppercase">
                       Kiểm định chất lượng
                     </p>
-                    <h3 className="mt-1 text-base font-bold text-[#1c1917]">
+                    <h3 className="mt-1 text-base font-bold text-foreground">
                       Kết quả kiểm định
                     </h3>
                   </div>
@@ -640,7 +640,7 @@ export function BatchDetailDrawer({
                         <div className="flex flex-wrap items-start justify-between gap-2">
                           <div className="flex items-start gap-2.5">
                             <span
-                              className={`mt-0.5 flex h-6 w-6 items-center justify-center rounded-full ${
+                              className={`mt-0.5 flex size-6 items-center justify-center rounded-full ${
                                 hasDefects
                                   ? "bg-red-100 text-red-700"
                                   : "bg-emerald-100 text-emerald-700"
@@ -649,12 +649,12 @@ export function BatchDetailDrawer({
                               {hasDefects ? (
                                 <TriangleAlert
                                   aria-hidden="true"
-                                  className="h-3.5 w-3.5"
+                                  className="size-3.5"
                                 />
                               ) : (
                                 <CircleCheck
                                   aria-hidden="true"
-                                  className="h-3.5 w-3.5"
+                                  className="size-3.5"
                                 />
                               )}
                             </span>
@@ -732,7 +732,7 @@ export function BatchDetailDrawer({
                   <p className="text-[10px] font-semibold tracking-[0.16em] text-stone-400 uppercase">
                     Nhật ký hệ thống
                   </p>
-                  <h3 className="mt-1 text-base font-bold text-[#1c1917]">
+                  <h3 className="mt-1 text-base font-bold text-foreground">
                     Lịch sử hoạt động
                   </h3>
                 </div>
@@ -744,18 +744,18 @@ export function BatchDetailDrawer({
                 {[...details.logs].reverse().map((log, index) => (
                   <li className="relative flex gap-3 pb-4 last:pb-0" key={log.id}>
                     {index < details.logs.length - 1 && (
-                      <span className="absolute top-2.5 bottom-0 left-[4px] w-px bg-stone-200" />
+                      <span className="absolute top-2.5 bottom-0 left-1 w-px bg-stone-200" />
                     )}
                     <span
                       aria-hidden="true"
-                      className={`relative mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full ring-4 ring-white ${
+                      className={`relative mt-1.5 size-2.5 shrink-0 rounded-full ring-4 ring-white ${
                         log.eventType === EventType.NOTIFICATION_FAILED
                           ? "bg-red-500"
                           : log.eventType === EventType.QC_REPORTED
                             ? "bg-violet-500"
                             : log.eventType === EventType.TELEGRAM_SENT
                               ? "bg-emerald-500"
-                              : "bg-[#9f4b2e]"
+                              : "bg-accent"
                       }`}
                     />
                     <div className="min-w-0 flex-1">
